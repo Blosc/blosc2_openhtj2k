@@ -1,8 +1,14 @@
-# Plugin example
+# J2K wheel
 
-This is an example on how to create a wheel of a plugin for Blosc2.
+By following the next steps you can edit J2K sources and work with the plugin in C-Blosc2.
+
+## Edit J2K sources in src/ folder
+
+In blosc2_htj2k.cpp you can change the parameters as you want.
 
 ## Create the wheel
+
+Once you have J2K parameters set, you have to create a wheel with the compressor inside:
 
 ```shell
 python setup.py bdist_wheel
@@ -35,5 +41,8 @@ In the future, you should be able to test that the wheel is working with this co
 ```shell
 blosc2_test_plugin plugin_example_name
 ```
+## Work in C-Blosc2
+
+Now that you have the wheel installed, work with it in C-Blosc2.
 
 That's all folks!
