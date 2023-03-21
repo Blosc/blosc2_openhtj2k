@@ -25,6 +25,7 @@ typedef int (*blosc2_codec_decoder_cb)(
 #include "decoder.hpp"
 #include "dec_utils.hpp"
 #include "blosc2_htj2k.h"
+#include "blosc2/codecs-registry.h"
 
 
 #define NO_QFACTOR 0xFF
@@ -324,3 +325,6 @@ int htj2k_write_ppm(
 
     return 0;
 }
+
+
+codec_info info = {.encoder="blosc2_openhtj2k_encoder", .decoder="blosc2_openhtj2k_decoder"};
