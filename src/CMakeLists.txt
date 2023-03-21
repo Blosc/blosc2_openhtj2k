@@ -16,3 +16,4 @@ endif()
 target_link_libraries(blosc2_openhtj2k open_htj2k)
 
 install(TARGETS blosc2_openhtj2k LIBRARY DESTINATION blosc2_openhtj2k)
+install(TARGETS open_htj2k LIBRARY DESTINATION blosc2_openhtj2k)
