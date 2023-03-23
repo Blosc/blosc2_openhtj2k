@@ -27,6 +27,7 @@
 #include "b2nd.h"
 #include "blosc2_htj2k.h"
 #include "math.h"
+#include "blosc2/plugins-utils.h"
 
 
 int teapot() {
@@ -34,9 +35,19 @@ int teapot() {
   char *ofname = "teapot2.ppm";
   image_t image;
 
+  blosc2_init();
+
+  char path[PATH_MAX];
+  void *lib = load_lib("openhtj2k", path);
+  if(lib == NULL) {
+    BLOSC_TRACE_ERROR("Error while loading the library");
+    return BLOSC2_ERROR_FAILURE;
+  }
+  int (*htj2k_read_image_ptr)(image_t *, const char *) = dlsym(lib, "htj2k_read_image");
+
   // Read source file(s)
   printf("Read\t");
-  if (htj2k_read_image(&image, ifname)) {
+  if (htj2k_read_image_ptr(&image, ifname)) {
     return -1;
   }
   printf("OK\n");
@@ -91,13 +102,24 @@ int teapot() {
 
   // Write output file
   printf("Write\t");
-  htj2k_write_ppm(buffer, (int64_t) buffer_size, &image, ofname);
+  int (*htj2k_write_ppm_ptr)(uint8_t *,
+                             int64_t ,
+                             image_t *,
+                             char *) = dlsym(lib, "htj2k_write_ppm");
+
+  htj2k_write_ppm_ptr(buffer, (int64_t) buffer_size, &image, ofname);
   printf("OK\n");
 
   BLOSC_ERROR(b2nd_free_ctx(ctx));
   BLOSC_ERROR(b2nd_free(arr));
   free(buffer);
-  htj2k_free_image(&image);
+  void (*htj2k_free_image_ptr)(image_t *) = dlsym(lib, "htj2k_free_image");
+
+  htj2k_free_image_ptr(&image);
+
+  dlclose(lib);
+  blosc2_destroy();
+
   return BLOSC2_ERROR_SUCCESS;
 }
 
