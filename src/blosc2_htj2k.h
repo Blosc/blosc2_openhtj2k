@@ -64,6 +64,22 @@ int htj2k_write_ppm(
     char *filename
 );
 
+typedef struct {
+    uint8_t qfactor;
+    bool isJPH;
+    uint8_t color_space;
+    uint32_t num_threads;
+    uint32_t XOsiz;
+    uint32_t YOsiz;
+    uint32_t XTsiz;
+    uint32_t YTsiz;
+    uint32_t XTOsiz;
+    uint32_t YTOsiz;
+    open_htj2k::cod_params cod;
+    open_htj2k::qcd_params qcd{};
+} j2k_params;
+
+
 #ifdef __cplusplus
 }
 #endif
