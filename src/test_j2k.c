@@ -64,6 +64,38 @@ int teapot() {
   for (int i = 0; i < BLOSC2_MAX_FILTERS; i++) {
     cparams.filters[i] = 0;
   }
+  j2k_params* codec_params = {0};
+  blosc2_cod_params cod;
+  cod.blkwidth                      = 4;
+  cod.blkheight                     = 4;
+  cod.is_max_precincts              = true;   // If false then precincts size must be defined
+  cod.use_SOP                       = false;  // Use SOP (Start Of Packet) marker
+  cod.use_EPH                       = false;  // Use EPH (End of Packet Header) marker
+  cod.progression_order             = 0;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
+  cod.number_of_layers              = 1;
+  cod.use_color_trafo               = 1;      // Use RGB->YCbCr color space conversion (1 or 0)
+  cod.dwt_levels                    = 5;      // Number of DWT decomposition (0-32)
+  cod.codeblock_style               = 0x040;
+  cod.transformation                = 1;      // 0:lossy 1:lossless
+  codec_params->cod = cod;
+
+  blosc2_qcd_params qcd;
+  qcd.is_derived          = false;
+  qcd.number_of_guardbits = 1;        // Number of guard bits (0-8)
+  qcd.base_step           = 0.003906;      // Base step size for quantization (0.0 - 2.0)
+  codec_params->qcd       = qcd;
+
+  codec_params->qfactor = 255;
+  codec_params->isJPH = false;
+  codec_params->color_space = 0;
+  codec_params->XOsiz = 0;
+  codec_params->YOsiz = 0;
+  codec_params->XTsiz = image.width;
+  codec_params->YTsiz = image.height;
+  codec_params->XTOsiz = 0;
+  codec_params->YTOsiz = 0;
+
+  cparams.codec_params = codec_params;
 
   blosc2_dparams dparams = BLOSC2_DPARAMS_DEFAULTS;
   blosc2_storage b2_storage = {.cparams=&cparams, .dparams=&dparams};

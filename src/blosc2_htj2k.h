@@ -65,18 +65,38 @@ int htj2k_write_ppm(
 );
 
 typedef struct {
+  uint16_t blkwidth;
+  uint16_t blkheight;
+  bool is_max_precincts;
+  bool use_SOP;
+  bool use_EPH;
+  uint8_t progression_order;
+  uint16_t number_of_layers;
+  uint8_t use_color_trafo;
+  uint8_t dwt_levels;
+  uint8_t codeblock_style;
+  uint8_t transformation;
+  uint8_t* PPx, PPy;
+} blosc2_cod_params;
+
+typedef struct {
+  uint8_t number_of_guardbits;
+  bool is_derived;
+  double base_step;
+} blosc2_qcd_params;
+
+typedef struct {
     uint8_t qfactor;
     bool isJPH;
     uint8_t color_space;
-    uint32_t num_threads;
     uint32_t XOsiz;
     uint32_t YOsiz;
     uint32_t XTsiz;
     uint32_t YTsiz;
     uint32_t XTOsiz;
     uint32_t YTOsiz;
-    open_htj2k::cod_params cod;
-    open_htj2k::qcd_params qcd{};
+    blosc2_cod_params cod;
+    blosc2_qcd_params qcd;
 } j2k_params;
 
 
