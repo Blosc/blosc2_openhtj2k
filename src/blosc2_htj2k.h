@@ -95,8 +95,8 @@ typedef struct {
     uint32_t YTsiz;
     uint32_t XTOsiz;
     uint32_t YTOsiz;
-    blosc2_cod_params cod;
-    blosc2_qcd_params qcd;
+    blosc2_cod_params *cod;
+    blosc2_qcd_params *qcd;
 } j2k_params;
 
 
