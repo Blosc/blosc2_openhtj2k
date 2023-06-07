@@ -16,12 +16,12 @@ target_link_libraries(blosc2_openhtj2k open_htj2k)
 link_directories(${Python_LIB})
 include_directories(${Python_INCLUDE})
 
-add_executable("test_j2k" "test_j2k.c")
-target_link_libraries("test_j2k" -lm blosc2)
+add_executable(test_j2k "test_j2k.c")
+target_link_libraries(test_j2k -lm blosc2)
 
 
 # This is needed for finding sibling libraries in the same directory for MacOS and Linux
-# TODO: Figurate out how to do that in Windows
+# TODO: Figure out how to do that in Windows
 if(APPLE)
     set_target_properties(blosc2_openhtj2k PROPERTIES INSTALL_RPATH "@loader_path/.")
 elseif(UNIX)

@@ -10,6 +10,8 @@ extern "C" {
 #include "blosc2.h"
 #include "b2nd.h"
 
+#define BLOSC_CODEC_OPENHTJ2K 244
+
 typedef struct {
   uint32_t width;
   uint32_t height;
