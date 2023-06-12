@@ -23,7 +23,7 @@ if(MSVC OR MINGW)
 elseif (APPLE)
     add_library(blosc2_openhtj2k MODULE blosc2_htj2k.cpp)
 else()
-    add_library(blosc2_openhtj2k SHARED blosc2_htj2k.cpp)
+    add_library(blosc2_openhtj2k MODULE blosc2_htj2k.cpp)
 endif()
 
 link_directories(${Python_LIB})

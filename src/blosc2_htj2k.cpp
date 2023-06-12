@@ -363,15 +363,7 @@ int htj2k_write_ppm(
     return 0;
 }
 
-void blosc2_openhtj2k_register(blosc2_codec *codec) {
-  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
-  codec->version = 1;
-  codec->complib = 1;
-  codec->compname = "openhtj2k";
-  codec->encoder = blosc2_openhtj2k_encoder;
-  codec->decoder = blosc2_openhtj2k_decoder;
-  blosc2_register_codec(codec);
-}
-
-
-codec_info info = {.encoder=(char *)"blosc2_openhtj2k_encoder", .decoder=(char *)"blosc2_openhtj2k_decoder"};
+codec_info info = {
+    .encoder=(char *)"blosc2_openhtj2k_encoder",
+    .decoder=(char *)"blosc2_openhtj2k_decoder"
+};
