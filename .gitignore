@@ -129,4 +129,5 @@ dmypy.json
 .pyre/
 
 
+/_skbuild/
 .*.swp
