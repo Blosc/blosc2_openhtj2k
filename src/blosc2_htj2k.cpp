@@ -1,25 +1,3 @@
-/*
-
-typedef int (*blosc2_codec_encoder_cb)(
-     const uint8_t *input,
-     int32_t input_len,
-     uint8_t *output,
-     int32_t output_len,
-     uint8_t meta,
-     blosc2_cparams *cparams,
-     const void *chunk)
-
-typedef int (*blosc2_codec_decoder_cb)(
-     const uint8_t *input,
-     int32_t input_len,
-     uint8_t *output,
-     int32_t output_len,
-     uint8_t meta,
-     blosc2_dparams *dparams,
-     const void *chunk)
-
-*/
-
 #include "cstring"
 #include "encoder.hpp"
 #include "decoder.hpp"
@@ -33,7 +11,7 @@ typedef int (*blosc2_codec_decoder_cb)(
 //#define JFNAME "output/teapot.jphc"
 #define JFNAME "output/teapot.j2c"
 
-int htj2k_read_image(image_t *image, const char *filename)
+int blosc2_openhtj2k_read_image(image_t *image, const char *filename)
 {
     // Parse image
     std::vector<std::string> filenames = {filename};
@@ -74,7 +52,7 @@ int htj2k_read_image(image_t *image, const char *filename)
     return 0;
 }
 
-void htj2k_free_image(image_t *image)
+void blosc2_openhtj2k_free_image(image_t *image)
 {
     free(image->buffer);
     image->buffer = NULL;
@@ -127,7 +105,7 @@ int blosc2_openhtj2k_encoder(
     uint8_t color_space = 0;
     uint32_t num_threads = 1;
 
-    j2k_params* plugin_params = (j2k_params*) cparams->codec_params;
+    blosc2_openhtj2k_params* plugin_params = (blosc2_openhtj2k_params*) cparams->codec_params;
     if (plugin_params != NULL) {
         qfactor = plugin_params->qfactor;
         isJPH = plugin_params->isJPH;
@@ -331,7 +309,7 @@ int blosc2_openhtj2k_decoder(
     return buffer_len;
 }
 
-int htj2k_write_ppm(
+int blosc2_openhtj2k_write_ppm(
     uint8_t *input,
     int64_t input_len,
     image_t *image,
