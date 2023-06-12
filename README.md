@@ -1,3 +1,12 @@
+# Building
+
+Build and install wheel, provided you are in a virtual environment:
+
+    git submodule update --init --recursive
+    python -m pip install -r requirements.txt
+    python setup.py bdist_wheel
+    pip install dist/blosc2_openhtj2k-*.whl
+
 # J2K wheel
 
 By following the next steps you can edit J2K sources and work with the plugin in C-Blosc2.
