@@ -59,6 +59,8 @@ int blosc2_openhtj2k_decoder(
     const void* chunk
 );
 
+void blosc2_openhtj2k_register(blosc2_codec *codec);
+
 int htj2k_write_ppm(
     uint8_t *input,
     int64_t input_len,

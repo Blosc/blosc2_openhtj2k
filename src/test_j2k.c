@@ -114,7 +114,7 @@ static int teapot() {
   }
   buffer = malloc(buffer_size);
 
-  BLOSC_ERROR(b2nd_to_cbuffer(arr, buffer, buffer_size));
+  BLOSC_ERROR(b2nd_to_cbuffer(arr, buffer, buffer_size)); // FIXME Sometimes this fails
   double tolerance = 0.1;
   for (int i = 0; i < (buffer_size / itemsize); i++) {
     if ((image.buffer[i] == 0) || (buffer[i] == 0)) {
@@ -156,6 +156,8 @@ static int teapot() {
 int main(void) {
   // Initialization
   blosc2_init();
+  blosc2_codec codec;
+  blosc2_openhtj2k_register(&codec);
 
   int result = teapot();
   printf("teapot: %d obtained \n \n", result);
