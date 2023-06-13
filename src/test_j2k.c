@@ -36,17 +36,9 @@ static int teapot() {
   char *ofname = "teapot2.ppm";
   image_t image;
 
-  char path[PATH_MAX];
-  void *lib = load_lib("openhtj2k", path);
-  if (lib == NULL) {
-    BLOSC_TRACE_ERROR("Error while loading the library");
-    return BLOSC2_ERROR_FAILURE;
-  }
-
   // Read source file(s)
   printf("Read\t");
-  int (*read_image)(image_t *, const char *) = dlsym(lib, "blosc2_openhtj2k_read_image");
-  if (read_image(&image, ifname)) {
+  if (blosc2_openhtj2k_read_image(&image, ifname)) {
     return -1;
   }
   printf("OK\n");
@@ -134,17 +126,14 @@ static int teapot() {
 
   // Write output file
   printf("Write\t");
-  int (*write_ppm)(uint8_t *, int64_t , image_t *, char *) = dlsym(lib, "blosc2_openhtj2k_write_ppm");
-  write_ppm(buffer, (int64_t) buffer_size, &image, ofname);
+  blosc2_openhtj2k_write_ppm(buffer, (int64_t) buffer_size, &image, ofname);
   printf("OK\n");
 
   // Free resources
   BLOSC_ERROR(b2nd_free_ctx(ctx));
   BLOSC_ERROR(b2nd_free(arr));
   free(buffer);
-  void (*free_image)(image_t *) = dlsym(lib, "blosc2_openhtj2k_free_image");
-  free_image(&image);
-  dlclose(lib);
+  blosc2_openhtj2k_free_image(&image);
 
   return BLOSC2_ERROR_SUCCESS;
 }
