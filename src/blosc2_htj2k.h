@@ -67,17 +67,6 @@ typedef struct {
   blosc2_openhtj2k_qcd_params *qcd;
 } blosc2_openhtj2k_params;
 
-/* Helper function to register the codec */
-void blosc2_openhtj2k_register(blosc2_codec *codec) {
-  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
-  codec->version = 1;
-  codec->complib = 1;
-  codec->compname = "openhtj2k";
-  codec->encoder = NULL;
-  codec->decoder = NULL;
-  blosc2_register_codec(codec);
-}
-
 /* Extra functions */
 typedef struct {
   uint32_t width;
@@ -96,10 +85,6 @@ typedef struct {
   uint16_t num_components;
   component_t components[3];
 } image_t;
-
-int blosc2_openhtj2k_read_image(image_t *image, const char *filename);
-void blosc2_openhtj2k_free_image(image_t *image);
-int blosc2_openhtj2k_write_ppm(uint8_t *input, int64_t input_len, image_t *image, char *filename);
 
 #ifdef __cplusplus
 }
