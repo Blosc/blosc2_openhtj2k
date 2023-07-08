@@ -4,23 +4,37 @@ from PIL import Image
 
 blosc2.register_codec("openhtj2k", 244)
 
-im = Image.open('input/teapot.ppm')
-#im = Image.open('input/officeshots.ppm')
+def im2np(im):
+    print('Convert image to np.ndarray:')
+    array = np.asarray(im)                  # height x width x channel
+    print(f'  shape={array.shape}')
+    array = np.transpose(array, (2, 1, 0))  # channel x width x height
+    array = np.ascontiguousarray(array)     # fixes "ndarray is not C-contiguous"
+    print(f'  shape={array.shape}')
+    print('  OK')
+    return array
 
-print('Convert image to np.ndarray:')
-array = np.asarray(im)                  # height x width x channel
-print(f'  shape={array.shape}')
-array = np.transpose(array, (2, 1, 0))  # channel x width x height
-array = np.ascontiguousarray(array)     # fixes "ndarray is not C-contiguous"
-print(f'  shape={array.shape}')
-print('OK')
+def np2bl(array):
+    print('Convert np.ndarray to blosc2:')
+    nthreads = 1
+    cparams = {'codec': 244, 'nthreads': nthreads}
+    dparams = {'nthreads': nthreads}
+    array = blosc2.asarray(array, cparams=cparams, dparams=dparams)
+    print('  OK')
+    return array
+
+def np2im(array):
+    array = np.transpose(array, (2, 1, 0))  # channel x width x height
+    im = Image.fromarray(array)
+    return im
 
 
-nthreads = 1
-cparams = {'codec': 244, 'nthreads': nthreads}
-dparams = {'nthreads': nthreads}
+FILENAME = 'input/officeshots.ppm'
+FILENAME = 'input/teapot.ppm'
 
-# FIXME segfault
-print('blosc2.asarray(...)')
-array = blosc2.asarray(array, cparams=cparams, dparams=dparams)
-print('OK')
+im = Image.open(FILENAME)   # load image
+array = im2np(im)           # image to numpy array
+array = np2bl(array)        # numpy array to blosc2 array
+array = np.asarray(array)   # blosc2 array to numpy array
+#im = np2im(array)
+#im.show()
