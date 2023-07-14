@@ -86,6 +86,9 @@ typedef struct {
   component_t components[3];
 } image_t;
 
+
+int set_params_default(uint8_t qfactor);
+
 #ifdef __cplusplus
 }
 #endif

@@ -2,6 +2,8 @@ import blosc2
 import numpy as np
 from PIL import Image
 
+import blosc2_openhtj2k
+
 blosc2.register_codec("openhtj2k", 244)
 
 def im2np(im):
@@ -16,6 +18,7 @@ def im2np(im):
 
 def np2bl(array):
     print('Convert np.ndarray to blosc2:')
+    blosc2_openhtj2k.set_params_default(255) # codec_params
     nthreads = 1
     cparams = {'codec': 244, 'nthreads': nthreads}
     dparams = {'nthreads': nthreads}
@@ -30,7 +33,7 @@ def np2im(array):
 
 
 FILENAME = 'input/officeshots.ppm'
-FILENAME = 'input/teapot.ppm'
+#FILENAME = 'input/teapot.ppm'
 
 im = Image.open(FILENAME)   # load image
 array = im2np(im)           # image to numpy array

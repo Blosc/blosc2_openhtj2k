@@ -8,12 +8,13 @@
 
 VERSION = 0.1
 
+from ctypes import cdll
 import os
 import platform
 from pathlib import Path
 
 
-def print_libpath():
+def get_libpath():
     system = platform.system()
     if system in ["Linux", "Darwin"]:
         libname = "libblosc2_openhtj2k.so"
@@ -21,8 +22,17 @@ def print_libpath():
         libname = "libblosc2_openhtj2k.dll"
     else:
         raise RuntimeError("Unsupported system: ", system)
-    libpath = os.path.abspath(Path(__file__).parent / libname)
+    return os.path.abspath(Path(__file__).parent / libname)
+
+def print_libpath():
+    libpath = get_libpath()
     print(libpath, end="")
+
+
+def set_params_default(qfactor):
+    libpath = get_libpath()
+    lib = cdll.LoadLibrary(libpath)
+    lib.set_params_default(qfactor)
 
 
 if __name__ == "__main__":

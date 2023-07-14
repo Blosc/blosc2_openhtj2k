@@ -13,6 +13,10 @@
 //#define JFNAME "output/teapot.jphc"
 #define JFNAME "output/teapot.j2c"
 
+static blosc2_openhtj2k_params params_default = {
+    .qfactor = NO_QFACTOR
+};
+
 int blosc2_openhtj2k_encoder(
     const uint8_t *input,
     int32_t input_len,
@@ -33,7 +37,8 @@ int blosc2_openhtj2k_encoder(
     int32_t blockshape[3];
     char *dtype;
     int8_t dtype_format;
-    error = b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape, &dtype, &dtype_format);
+    error = b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape,
+                                  &dtype, &dtype_format);
     free(content);
     free(dtype);
 
@@ -55,7 +60,7 @@ int blosc2_openhtj2k_encoder(
     // Input variables
     const char *ofname = JFNAME;
     int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
-    uint8_t qfactor = NO_QFACTOR; // 255
+    uint8_t qfactor = params_default.qfactor;
     bool isJPH = false;
     uint8_t color_space = 0;
     uint32_t num_threads = 1;
@@ -268,3 +273,9 @@ codec_info info = {
     .encoder=(char *)"blosc2_openhtj2k_encoder",
     .decoder=(char *)"blosc2_openhtj2k_decoder"
 };
+
+
+int set_params_default(uint8_t qfactor) {
+    params_default.qfactor = qfactor;
+    return 0;
+}
