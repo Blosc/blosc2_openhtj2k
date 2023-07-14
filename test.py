@@ -18,7 +18,7 @@ def im2np(im):
 
 def np2bl(array):
     print('Convert np.ndarray to blosc2:')
-    blosc2_openhtj2k.set_params_default(255) # codec_params
+    blosc2_openhtj2k.set_params_default(transformation=0)
     nthreads = 1
     cparams = {'codec': 244, 'nthreads': nthreads}
     dparams = {'nthreads': nthreads}

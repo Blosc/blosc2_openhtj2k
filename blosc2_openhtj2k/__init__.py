@@ -8,7 +8,7 @@
 
 VERSION = 0.1
 
-from ctypes import cdll
+import ctypes
 import os
 import platform
 from pathlib import Path
@@ -29,10 +29,39 @@ def print_libpath():
     print(libpath, end="")
 
 
-def set_params_default(qfactor):
+params_default = {
+    'qfactor'               : 255,
+    'isJPH'                 : False,
+    'color_space'           : 0,
+    # COD
+    'blkwidth'              : 4,
+    'blkheight'             : 4,
+    'is_max_precincts'      : True,
+    'use_SOP'               : False,
+    'use_EPH'               : False,
+    'progression_order'     : 0,
+    'number_of_layers'      : 1,
+    'use_color_trafo'       : 1,
+    'dwt_levels'            : 5,
+    'codeblock_style'       : 0x040,
+    'transformation'        : 1,
+    # QCD
+    'number_of_guardbits'   : 1,
+    'is_derived'            : False,
+    'base_step'             : 0.0,
+}
+
+def set_params_default(**kwargs):
+    params = params_default.copy()
+    params.update(kwargs)
+    args = params.values()
+    args = list(args)
+    assert len(args) == 17
+    args[16] = ctypes.c_double(args[16])
+
     libpath = get_libpath()
-    lib = cdll.LoadLibrary(libpath)
-    lib.set_params_default(qfactor)
+    lib = ctypes.cdll.LoadLibrary(libpath)
+    lib.set_params_default(*args)
 
 
 if __name__ == "__main__":
