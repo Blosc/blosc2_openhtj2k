@@ -87,7 +87,7 @@ typedef struct {
 } image_t;
 
 
-int set_params_default(
+int set_params_defaults(
   uint8_t qfactor,
   bool isJPH,
   uint8_t color_space,

@@ -29,7 +29,7 @@ def print_libpath():
     print(libpath, end="")
 
 
-params_default = {
+params_defaults = {
     'qfactor'               : 255,
     'isJPH'                 : False,
     'color_space'           : 0,
@@ -51,17 +51,22 @@ params_default = {
     'base_step'             : 0.0,
 }
 
-def set_params_default(**kwargs):
-    params = params_default.copy()
+def set_params_defaults(**kwargs):
+    # Check arguments
+    not_supported = [k for k in kwargs.keys() if k not in params_defaults]
+    if not_supported != []:
+        raise ValueError(f"The next params are not supported: {not_supported}")
+
+    # Prepare arguments
+    params = params_defaults.copy()
     params.update(kwargs)
     args = params.values()
     args = list(args)
-    assert len(args) == 17
     args[16] = ctypes.c_double(args[16])
 
     libpath = get_libpath()
     lib = ctypes.cdll.LoadLibrary(libpath)
-    lib.set_params_default(*args)
+    lib.set_params_defaults(*args)
 
 
 if __name__ == "__main__":
