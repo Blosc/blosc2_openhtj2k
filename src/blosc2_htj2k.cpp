@@ -112,6 +112,9 @@ int blosc2_openhtj2k_encoder(
     siz.Xsiz   = image->width + img_orig_x;
     siz.Ysiz   = image->height + img_orig_y;
     siz.Csiz   = image->num_components;
+    siz.Ssiz.reserve(siz.Csiz);
+    siz.XRsiz.reserve(siz.Csiz);
+    siz.YRsiz.reserve(siz.Csiz);
     for (uint16_t c = 0; c < siz.Csiz; ++c) {
         siz.Ssiz.push_back(image->components[c].ssiz);
         auto compw = image->components[c].width;
