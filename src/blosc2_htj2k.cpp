@@ -105,27 +105,10 @@ int blosc2_openhtj2k_encoder(
         ptr += size;
     }
 
-    // Information of input image
-    uint32_t img_orig_x = 0, img_orig_y = 0;
     open_htj2k::siz_params siz;
-    siz.Rsiz   = 0;
-    siz.Xsiz   = image->width + img_orig_x;
-    siz.Ysiz   = image->height + img_orig_y;
-    siz.Csiz   = image->num_components;
-    siz.Ssiz.reserve(siz.Csiz);
-    siz.XRsiz.reserve(siz.Csiz);
-    siz.YRsiz.reserve(siz.Csiz);
-    for (uint16_t c = 0; c < siz.Csiz; ++c) {
-        siz.Ssiz.push_back(image->components[c].ssiz);
-        auto compw = image->components[c].width;
-        auto comph = image->components[c].height;
-        siz.XRsiz.push_back(static_cast<unsigned char>(((siz.Xsiz - siz.XOsiz) + compw - 1) / compw));
-        siz.YRsiz.push_back(static_cast<unsigned char>(((siz.Ysiz - siz.YOsiz) + comph - 1) / comph));
-    }
-
     if (plugin_params == NULL) {
-        siz.XOsiz  = img_orig_x;
-        siz.YOsiz  = img_orig_y;
+        siz.XOsiz  = 0;
+        siz.YOsiz  = 0;
         siz.XTsiz  = image->width;      // Tiles size (X) default to image size
         siz.YTsiz  = image->height;     // Tiles size (Y) default to image size
         siz.XTOsiz = 0;                 // Origin of first tile (X)
@@ -137,6 +120,22 @@ int blosc2_openhtj2k_encoder(
         siz.YTsiz = plugin_params->YTsiz;
         siz.XTOsiz = plugin_params->XTOsiz;
         siz.YTOsiz = plugin_params->YTOsiz;
+    }
+
+    // Information of input image
+    siz.Rsiz   = 0;
+    siz.Xsiz   = image->width + siz.XOsiz;
+    siz.Ysiz   = image->height + siz.YOsiz;
+    siz.Csiz   = image->num_components;
+    siz.Ssiz.reserve(siz.Csiz);
+    siz.XRsiz.reserve(siz.Csiz);
+    siz.YRsiz.reserve(siz.Csiz);
+    for (uint16_t c = 0; c < siz.Csiz; ++c) {
+        siz.Ssiz.push_back(image->components[c].ssiz);
+        auto compw = image->components[c].width;
+        auto comph = image->components[c].height;
+        siz.XRsiz.push_back(static_cast<unsigned char>(((siz.Xsiz - siz.XOsiz) + compw - 1) / compw));
+        siz.YRsiz.push_back(static_cast<unsigned char>(((siz.Ysiz - siz.YOsiz) + comph - 1) / comph));
     }
 
     // Parameters related to COD marker
