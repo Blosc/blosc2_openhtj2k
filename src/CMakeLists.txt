@@ -1,7 +1,7 @@
 add_subdirectory(OpenHTJ2K)
 message("dp add subdirectory")
 
-add_library(blosc2_openhtj2k SHARED blosc2_htj2k.cpp)
+add_library(blosc2_openhtj2k MODULE blosc2_htj2k.cpp)
 message("dp add library")
 
 include_directories(OpenHTJ2K/source/core/interface OpenHTJ2K/source/apps/decoder
@@ -14,6 +14,10 @@ if(MSVC OR MINGW)
     set_property(TARGET blosc2_openhtj2k PROPERTY WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 endif()
 target_link_libraries(blosc2_openhtj2k open_htj2k)
+
+# This is needed for finding sibling libraries in the same directory for MacOS
+# TODO: Figurate out how to do that in Linux and Windows
+set_target_properties(blosc2_openhtj2k PROPERTIES INSTALL_RPATH "@loader_path/.")
 
 install(TARGETS blosc2_openhtj2k LIBRARY DESTINATION blosc2_openhtj2k)
 install(TARGETS open_htj2k LIBRARY DESTINATION blosc2_openhtj2k)
