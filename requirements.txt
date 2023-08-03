@@ -1,4 +1,3 @@
 blosc2
-cmake
-scikit-build
+scikit-build-core
 pillow
