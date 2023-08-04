@@ -47,6 +47,10 @@ static int teapot() {
 
   blosc2_cparams cparams = BLOSC2_CPARAMS_DEFAULTS;
   cparams.compcode = BLOSC_CODEC_OPENHTJ2K;
+  //cparams.compcode = BLOSC_BLOSCLZ;
+  //cparams.compcode = BLOSC_ZSTD;
+  //cparams.clevel = 9;
+
   cparams.typesize = itemsize;
   for (int i = 0; i < BLOSC2_MAX_FILTERS; i++) {
     cparams.filters[i] = 0;
@@ -105,6 +109,7 @@ static int teapot() {
   buffer = malloc(buffer_size);
 
   BLOSC_ERROR(b2nd_to_cbuffer(arr, buffer, buffer_size));
+  printf("Compress ratio: %.3f x\n", (float)arr->sc->nbytes / (float)arr->sc->cbytes);
   double tolerance = 0.1;
   for (int i = 0; i < (buffer_size / itemsize); i++) {
     if ((image.buffer[i] == 0) || (buffer[i] == 0)) {
