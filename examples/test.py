@@ -32,8 +32,8 @@ def np2im(array):
     return im
 
 
-#FILENAME = 'input/officeshots.ppm'
-FILENAME = 'input/teapot.ppm'
+#FILENAME = '../input/officeshots.ppm'
+FILENAME = '../input/teapot.ppm'
 
 im = Image.open(FILENAME)   # load image
 array = im2np(im)           # image to numpy array

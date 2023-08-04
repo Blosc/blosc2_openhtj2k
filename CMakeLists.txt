@@ -11,7 +11,7 @@ project(blosc2_openhtj2k LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 # Needed when working with cibuildwheel
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
+#set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15)
 
 # Debug build
 set(CMAKE_C_FLAGS_DEBUG_INIT "-O0 -g")
