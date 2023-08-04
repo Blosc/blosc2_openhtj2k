@@ -7,17 +7,6 @@
 #include "utils.h"
 
 
-/* Helper function to register the codec */
-void blosc2_openhtj2k_register(blosc2_codec *codec) {
-  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
-  codec->version = 1;
-  codec->complib = 1;
-  codec->compname = (char*)"openhtj2k";
-  codec->encoder = NULL;
-  codec->decoder = NULL;
-  blosc2_register_codec(codec);
-}
-
 
 int blosc2_openhtj2k_read_image(image_t *image, const char *filename)
 {

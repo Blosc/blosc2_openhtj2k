@@ -25,6 +25,7 @@
 
 #include "blosc2.h"
 #include "utils.h"
+#include "blosc2_htj2k_public.h"
 
 
 static int teapot() {
@@ -105,6 +106,9 @@ static int teapot() {
   buffer = malloc(buffer_size);
 
   BLOSC_ERROR(b2nd_to_cbuffer(arr, buffer, buffer_size));
+  printf("Compress ratio: %.3f x\n", (float)arr->sc->nbytes / (float)arr->sc->cbytes);
+
+  // Check that the decompressed data is ok
   double tolerance = 0.1;
   for (int i = 0; i < (buffer_size / itemsize); i++) {
     if ((image.buffer[i] == 0) || (buffer[i] == 0)) {

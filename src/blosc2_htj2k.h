@@ -23,33 +23,6 @@ extern "C" {
 #error Cannot determine how to define BLOSC2_OPENHTJ2K_EXPORT for this compiler.
 #endif
 
-#define BLOSC_CODEC_OPENHTJ2K 244
-
-BLOSC2_OPENHTJ2K_EXPORT int blosc2_openhtj2k_encoder(
-  				const uint8_t* input,
-  				int32_t input_len,
-  				uint8_t* output,
-  				int32_t output_len,
-  				uint8_t meta,
-  				blosc2_cparams* cparams,
-  				const void* chunk
-				);
-
-BLOSC2_OPENHTJ2K_EXPORT int blosc2_openhtj2k_decoder(
-  				const uint8_t *input,
-  				int32_t input_len,
- 				uint8_t *output,
-  				int32_t output_len,
-  				uint8_t meta,
-  				blosc2_dparams *dparams,
-  				const void* chunk
-				);
-
-BLOSC2_OPENHTJ2K_EXPORT codec_info info = {
-    					.encoder=(char *)"blosc2_openhtj2k_encoder",
-    					.decoder=(char *)"blosc2_openhtj2k_decoder"
-					};
-
 
 typedef struct {
   uint16_t blkwidth;
