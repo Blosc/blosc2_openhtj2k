@@ -17,12 +17,16 @@ link_directories(${Python_LIB})
 include_directories(${Python_INCLUDE})
 
 add_executable("test_j2k" "test_j2k.c")
-target_link_libraries("test_j2k" blosc2)
+target_link_libraries("test_j2k" -lm blosc2)
 
 
-# This is needed for finding sibling libraries in the same directory for MacOS
-# TODO: Figurate out how to do that in Linux and Windows
-set_target_properties(blosc2_openhtj2k PROPERTIES INSTALL_RPATH "@loader_path/.")
+# This is needed for finding sibling libraries in the same directory for MacOS and Linux
+# TODO: Figurate out how to do that in Windows
+if(APPLE)
+    set_target_properties(blosc2_openhtj2k PROPERTIES INSTALL_RPATH "@loader_path/.")
+elseif(UNIX)
+    set_target_properties(blosc2_openhtj2k PROPERTIES INSTALL_RPATH "\${ORIGIN}/.")
+endif()
 
 install(TARGETS blosc2_openhtj2k LIBRARY DESTINATION blosc2_openhtj2k)
 install(TARGETS open_htj2k LIBRARY DESTINATION blosc2_openhtj2k)

@@ -192,17 +192,17 @@ int blosc2_openhtj2k_encoder(
         cod.codeblock_style               = 0x040;
         cod.transformation                = 1;      // 0:lossy 1:lossless
     } else {
-        cod.blkwidth                      = plugin_params->cod.blkwidth;
-        cod.blkheight                     = plugin_params->cod.blkheight;
-        cod.is_max_precincts              = plugin_params->cod.is_max_precincts;   // If false then precincts size must be defined
-        cod.use_SOP                       = plugin_params->cod.use_SOP;  // Use SOP (Start Of Packet) marker
-        cod.use_EPH                       = plugin_params->cod.use_EPH;  // Use EPH (End of Packet Header) marker
-        cod.progression_order             = plugin_params->cod.progression_order;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
-        cod.number_of_layers              = plugin_params->cod.number_of_layers;
-        cod.use_color_trafo               = plugin_params->cod.use_color_trafo;      // Use RGB->YCbCr color space conversion (1 or 0)
-        cod.dwt_levels                    = plugin_params->cod.dwt_levels;      // Number of DWT decomposition (0-32)
-        cod.codeblock_style               = plugin_params->cod.codeblock_style;
-        cod.transformation                = plugin_params->cod.transformation;      // 0:lossy 1:lossless
+        cod.blkwidth                      = plugin_params->cod->blkwidth;
+        cod.blkheight                     = plugin_params->cod->blkheight;
+        cod.is_max_precincts              = plugin_params->cod->is_max_precincts;   // If false then precincts size must be defined
+        cod.use_SOP                       = plugin_params->cod->use_SOP;  // Use SOP (Start Of Packet) marker
+        cod.use_EPH                       = plugin_params->cod->use_EPH;  // Use EPH (End of Packet Header) marker
+        cod.progression_order             = plugin_params->cod->progression_order;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
+        cod.number_of_layers              = plugin_params->cod->number_of_layers;
+        cod.use_color_trafo               = plugin_params->cod->use_color_trafo;      // Use RGB->YCbCr color space conversion (1 or 0)
+        cod.dwt_levels                    = plugin_params->cod->dwt_levels;      // Number of DWT decomposition (0-32)
+        cod.codeblock_style               = plugin_params->cod->codeblock_style;
+        cod.transformation                = plugin_params->cod->transformation;      // 0:lossy 1:lossless
     }
 
 
@@ -216,9 +216,9 @@ int blosc2_openhtj2k_encoder(
             qcd.base_step = 1.0f / static_cast<float>(1 << image->max_bpp);
         }
     } else {
-        qcd.is_derived          =  plugin_params->qcd.is_derived;
-        qcd.number_of_guardbits = plugin_params->qcd.number_of_guardbits;        // Number of guard bits (0-8)
-        qcd.base_step           = plugin_params->qcd.base_step;      // Base step size for quantiza
+        qcd.is_derived          =  plugin_params->qcd->is_derived;
+        qcd.number_of_guardbits = plugin_params->qcd->number_of_guardbits;        // Number of guard bits (0-8)
+        qcd.base_step           = plugin_params->qcd->base_step;      // Base step size for quantiza
     }
 
     // Encode
