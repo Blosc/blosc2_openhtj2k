@@ -121,11 +121,18 @@ int blosc2_openhtj2k_encoder(
 
     // Input variables
     const char *ofname = JFNAME;
+    int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
     uint8_t qfactor = NO_QFACTOR; // 255
     bool isJPH = false;
     uint8_t color_space = 0;
     uint32_t num_threads = 1;
-    int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
+
+    j2k_params* plugin_params = (j2k_params*) cparams->codec_params;
+    if (plugin_params != NULL) {
+        qfactor = plugin_params->qfactor;
+        isJPH = plugin_params->isJPH;
+        color_space = plugin_params->color_space;
+    }
 
     // Input buffer
     const uint8_t *ptr = input;
@@ -144,12 +151,6 @@ int blosc2_openhtj2k_encoder(
     siz.Rsiz   = 0;
     siz.Xsiz   = image->width + img_orig_x;
     siz.Ysiz   = image->height + img_orig_y;
-    siz.XOsiz  = img_orig_x;
-    siz.YOsiz  = img_orig_y;
-    siz.XTsiz  = image->width;      // Tiles size (X) default to image size
-    siz.YTsiz  = image->height;     // Tiles size (Y) default to image size
-    siz.XTOsiz = 0;                 // Origin of first tile (X)
-    siz.YTOsiz = 0;                 // Origin of first tile (Y)
     siz.Csiz   = image->num_components;
     for (uint16_t c = 0; c < siz.Csiz; ++c) {
         siz.Ssiz.push_back(image->components[c].ssiz);
@@ -159,29 +160,65 @@ int blosc2_openhtj2k_encoder(
         siz.YRsiz.push_back(static_cast<unsigned char>(((siz.Ysiz - siz.YOsiz) + comph - 1) / comph));
     }
 
+    if (plugin_params == NULL) {
+        siz.XOsiz  = img_orig_x;
+        siz.YOsiz  = img_orig_y;
+        siz.XTsiz  = image->width;      // Tiles size (X) default to image size
+        siz.YTsiz  = image->height;     // Tiles size (Y) default to image size
+        siz.XTOsiz = 0;                 // Origin of first tile (X)
+        siz.YTOsiz = 0;                 // Origin of first tile (Y)
+    } else {
+        siz.XOsiz = plugin_params->XOsiz;
+        siz.YOsiz = plugin_params->YOsiz;
+        siz.XTsiz = plugin_params->XTsiz;
+        siz.YTsiz = plugin_params->YTsiz;
+        siz.XTOsiz = plugin_params->XTOsiz;
+        siz.YTOsiz = plugin_params->YTOsiz;
+    }
+
     // Parameters related to COD marker
-    uint32_t cblk_width = 4, cblk_height = 4; // Must be power of 2 and >= 4
     open_htj2k::cod_params cod;
-    cod.blkwidth                      = static_cast<uint16_t>(cblk_width);
-    cod.blkheight                     = static_cast<uint16_t>(cblk_height);
-    cod.is_max_precincts              = true;   // If false then precincts size must be defined
-    cod.use_SOP                       = false;  // Use SOP (Start Of Packet) marker
-    cod.use_EPH                       = false;  // Use EPH (End of Packet Header) marker
-    cod.progression_order             = 0;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
-    cod.number_of_layers              = 1;
-    cod.use_color_trafo               = 1;      // Use RGB->YCbCr color space conversion (1 or 0)
-    cod.dwt_levels                    = 5;      // Number of DWT decomposition (0-32)
-    cod.codeblock_style               = 0x040;
-    cod.transformation                = 1;      // 0:lossy 1:lossless
+    if (plugin_params == NULL) {
+        uint32_t cblk_width = 4, cblk_height = 4; // Must be power of 2 and >= 4
+        cod.blkwidth                      = static_cast<uint16_t>(cblk_width);
+        cod.blkheight                     = static_cast<uint16_t>(cblk_height);
+        cod.is_max_precincts              = true;   // If false then precincts size must be defined
+        cod.use_SOP                       = false;  // Use SOP (Start Of Packet) marker
+        cod.use_EPH                       = false;  // Use EPH (End of Packet Header) marker
+        cod.progression_order             = 0;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
+        cod.number_of_layers              = 1;
+        cod.use_color_trafo               = 1;      // Use RGB->YCbCr color space conversion (1 or 0)
+        cod.dwt_levels                    = 5;      // Number of DWT decomposition (0-32)
+        cod.codeblock_style               = 0x040;
+        cod.transformation                = 1;      // 0:lossy 1:lossless
+    } else {
+        cod.blkwidth                      = plugin_params->cod.blkwidth;
+        cod.blkheight                     = plugin_params->cod.blkheight;
+        cod.is_max_precincts              = plugin_params->cod.is_max_precincts;   // If false then precincts size must be defined
+        cod.use_SOP                       = plugin_params->cod.use_SOP;  // Use SOP (Start Of Packet) marker
+        cod.use_EPH                       = plugin_params->cod.use_EPH;  // Use EPH (End of Packet Header) marker
+        cod.progression_order             = plugin_params->cod.progression_order;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
+        cod.number_of_layers              = plugin_params->cod.number_of_layers;
+        cod.use_color_trafo               = plugin_params->cod.use_color_trafo;      // Use RGB->YCbCr color space conversion (1 or 0)
+        cod.dwt_levels                    = plugin_params->cod.dwt_levels;      // Number of DWT decomposition (0-32)
+        cod.codeblock_style               = plugin_params->cod.codeblock_style;
+        cod.transformation                = plugin_params->cod.transformation;      // 0:lossy 1:lossless
+    }
+
 
     // Parameters related to QCD marker
-
     open_htj2k::qcd_params qcd{};
-    qcd.is_derived          = false;
-    qcd.number_of_guardbits = 1;        // Number of guard bits (0-8)
-    qcd.base_step           = 0.0;      // Base step size for quantization (0.0 - 2.0)
-    if (qcd.base_step == 0.0) {
-        qcd.base_step = 1.0f / static_cast<float>(1 << image->max_bpp);
+    if (plugin_params == NULL) {
+        qcd.is_derived          = false;
+        qcd.number_of_guardbits = 1;        // Number of guard bits (0-8)
+        qcd.base_step           = 0.0;      // Base step size for quantization (0.0 - 2.0)
+        if (qcd.base_step == 0.0) {
+            qcd.base_step = 1.0f / static_cast<float>(1 << image->max_bpp);
+        }
+    } else {
+        qcd.is_derived          =  plugin_params->qcd.is_derived;
+        qcd.number_of_guardbits = plugin_params->qcd.number_of_guardbits;        // Number of guard bits (0-8)
+        qcd.base_step           = plugin_params->qcd.base_step;      // Base step size for quantiza
     }
 
     // Encode
@@ -327,4 +364,4 @@ int htj2k_write_ppm(
 }
 
 
-codec_info info = {.encoder="blosc2_openhtj2k_encoder", .decoder="blosc2_openhtj2k_decoder"};
+codec_info info = {.encoder=(char *)"blosc2_openhtj2k_encoder", .decoder=(char *)"blosc2_openhtj2k_decoder"};
