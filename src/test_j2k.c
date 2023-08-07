@@ -30,12 +30,10 @@
 #include "blosc2/plugins-utils.h"
 
 
-int teapot() {
+static int teapot() {
   const char *ifname = "teapot.ppm";
   char *ofname = "teapot2.ppm";
   image_t image;
-
-  blosc2_init();
 
   char path[PATH_MAX];
   void *lib = load_lib("openhtj2k", path);
@@ -59,7 +57,7 @@ int teapot() {
   uint8_t itemsize = 4;
 
   blosc2_cparams cparams = BLOSC2_CPARAMS_DEFAULTS;
-  cparams.compcode = BLOSC_CODEC_J2K;
+  cparams.compcode = BLOSC_CODEC_OPENHTJ2K;
   cparams.typesize = itemsize;
   for (int i = 0; i < BLOSC2_MAX_FILTERS; i++) {
     cparams.filters[i] = 0;
@@ -150,22 +148,18 @@ int teapot() {
   htj2k_free_image_ptr(&image);
 
   dlclose(lib);
-  blosc2_destroy();
 
   return BLOSC2_ERROR_SUCCESS;
 }
 
 
 int main(void) {
+  // Initialization
+  blosc2_init();
 
-  int result;
-  blosc2_init();   // this is mandatory for initiallizing the plugin mechanism
-  result = teapot();
+  int result = teapot();
   printf("teapot: %d obtained \n \n", result);
-  if (result < 0)
-    return result;
+
   blosc2_destroy();
-
-  return BLOSC2_ERROR_SUCCESS;
-
+  return result;
 }

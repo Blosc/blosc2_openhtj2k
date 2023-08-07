@@ -4,8 +4,8 @@ By following the next steps you can edit J2K sources and work with the plugin in
 
 ## Configuring J2K params
 
-In blosc2_htj2k.cpp you can change the default parameters as you want.
-Moreover, in encoder you can use the j2k_params as C-Blosc2 cparams.codec_params to choose J2K parameters.
+In `blosc2_htj2k.cpp` you can change the default parameters as you want.
+Moreover, in encoder you can use the `j2k_params` as C-Blosc2 `cparams.codec_params` to choose J2K parameters.
 
 ## Create the wheel
 
