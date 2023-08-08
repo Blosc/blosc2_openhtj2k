@@ -44,7 +44,6 @@ typedef struct {
   uint8_t dwt_levels;
   uint8_t codeblock_style;
   uint8_t transformation;
-  uint8_t* PPx, PPy;
 } blosc2_openhtj2k_cod_params;
 
 typedef struct {

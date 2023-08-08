@@ -10,9 +10,6 @@
 
 #define NO_QFACTOR 0xFF
 
-//#define JFNAME "output/teapot.jphc"
-#define JFNAME "output/teapot.j2c"
-
 static blosc2_openhtj2k_cod_params params_cod_default = {
   .blkwidth            = 4,
   .blkheight           = 4,
@@ -51,7 +48,7 @@ int blosc2_openhtj2k_encoder(
 {
     uint8_t *content;
     int32_t content_len;
-    int error = blosc2_meta_get((blosc2_schunk*)cparams->schunk, "b2nd", &content, &content_len);
+    BLOSC_ERROR(blosc2_meta_get((blosc2_schunk*)cparams->schunk, "b2nd", &content, &content_len));
 
     int8_t ndim;
     int64_t shape[3];
@@ -59,8 +56,9 @@ int blosc2_openhtj2k_encoder(
     int32_t blockshape[3];
     char *dtype;
     int8_t dtype_format;
-    error = b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape,
-                                  &dtype, &dtype_format);
+    BLOSC_ERROR(
+        b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape, &dtype, &dtype_format)
+    );
     free(content);
     free(dtype);
 
@@ -80,7 +78,6 @@ int blosc2_openhtj2k_encoder(
     image_t *image = &tmp;
 
     // Input variables
-    const char *ofname = JFNAME;
     int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
     uint8_t qfactor = params_defaults.qfactor;
     bool isJPH = params_defaults.isJPH;
@@ -97,6 +94,7 @@ int blosc2_openhtj2k_encoder(
     // Input buffer
     const uint8_t *ptr = input;
     std::vector<int32_t *> input_buf;
+    input_buf.reserve(image->num_components);
     for (uint16_t c = 0; c < image->num_components; ++c) {
         input_buf.push_back((int32_t*)ptr);
         uint32_t width = image->components[c].width;
@@ -173,7 +171,7 @@ int blosc2_openhtj2k_encoder(
     std::vector<uint8_t> outbuf;
     for (int i = 0; i < num_iterations; ++i) {
         open_htj2k::openhtj2k_encoder encoder(
-            ofname,                 // output filename
+            "",                     // output filename, not used because below we call set_output_buffer
             input_buf,
             siz,                    // information of input image
             cod,                    // parameters related to COD marker
