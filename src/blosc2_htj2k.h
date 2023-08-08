@@ -12,58 +12,24 @@ extern "C" {
 
 #define BLOSC_CODEC_OPENHTJ2K 244
 
-typedef struct {
-  uint32_t width;
-  uint32_t height;
-  uint8_t depth; // default 8
-  bool sign;     // default 0
-  uint8_t ssiz;  // component's bit depth and sign (combines the 2 above)
-} component_t;
-
-typedef struct {
-    uint8_t *buffer;
-    int32_t buffer_len;
-    uint32_t width;
-    uint32_t height;
-    uint8_t max_bpp;
-    uint16_t num_components;
-    component_t components[3];
-} image_t;
-
-int htj2k_read_image(
-    image_t *image,
-    const char *filename
-);
-
-void htj2k_free_image(
-    image_t *image
-);
-
 int blosc2_openhtj2k_encoder(
-    const uint8_t* input,
-    int32_t input_len,
-    uint8_t* output,
-    int32_t output_len,
-    uint8_t meta,
-    blosc2_cparams* cparams,
-    const void* chunk
+  const uint8_t* input,
+  int32_t input_len,
+  uint8_t* output,
+  int32_t output_len,
+  uint8_t meta,
+  blosc2_cparams* cparams,
+  const void* chunk
 );
 
 int blosc2_openhtj2k_decoder(
-    const uint8_t *input,
-    int32_t input_len,
-    uint8_t *output,
-    int32_t output_len,
-    uint8_t meta,
-    blosc2_dparams *dparams,
-    const void* chunk
-);
-
-int htj2k_write_ppm(
-    uint8_t *input,
-    int64_t input_len,
-    image_t *image,
-    char *filename
+  const uint8_t *input,
+  int32_t input_len,
+  uint8_t *output,
+  int32_t output_len,
+  uint8_t meta,
+  blosc2_dparams *dparams,
+  const void* chunk
 );
 
 typedef struct {
@@ -79,28 +45,61 @@ typedef struct {
   uint8_t codeblock_style;
   uint8_t transformation;
   uint8_t* PPx, PPy;
-} blosc2_cod_params;
+} blosc2_openhtj2k_cod_params;
 
 typedef struct {
   uint8_t number_of_guardbits;
   bool is_derived;
   double base_step;
-} blosc2_qcd_params;
+} blosc2_openhtj2k_qcd_params;
 
 typedef struct {
-    uint8_t qfactor;
-    bool isJPH;
-    uint8_t color_space;
-    uint32_t XOsiz;
-    uint32_t YOsiz;
-    uint32_t XTsiz;
-    uint32_t YTsiz;
-    uint32_t XTOsiz;
-    uint32_t YTOsiz;
-    blosc2_cod_params *cod;
-    blosc2_qcd_params *qcd;
-} j2k_params;
+  uint8_t qfactor;
+  bool isJPH;
+  uint8_t color_space;
+  uint32_t XOsiz;
+  uint32_t YOsiz;
+  uint32_t XTsiz;
+  uint32_t YTsiz;
+  uint32_t XTOsiz;
+  uint32_t YTOsiz;
+  blosc2_openhtj2k_cod_params *cod;
+  blosc2_openhtj2k_qcd_params *qcd;
+} blosc2_openhtj2k_params;
 
+/* Helper function to register the codec */
+void blosc2_openhtj2k_register(blosc2_codec *codec) {
+  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
+  codec->version = 1;
+  codec->complib = 1;
+  codec->compname = "openhtj2k";
+  codec->encoder = NULL;
+  codec->decoder = NULL;
+  blosc2_register_codec(codec);
+}
+
+/* Extra functions */
+typedef struct {
+  uint32_t width;
+  uint32_t height;
+  uint8_t depth; // default 8
+  bool sign;     // default 0
+  uint8_t ssiz;  // component's bit depth and sign (combines the 2 above)
+} component_t;
+
+typedef struct {
+  uint8_t *buffer;
+  int32_t buffer_len;
+  uint32_t width;
+  uint32_t height;
+  uint8_t max_bpp;
+  uint16_t num_components;
+  component_t components[3];
+} image_t;
+
+int blosc2_openhtj2k_read_image(image_t *image, const char *filename);
+void blosc2_openhtj2k_free_image(image_t *image);
+int blosc2_openhtj2k_write_ppm(uint8_t *input, int64_t input_len, image_t *image, char *filename);
 
 #ifdef __cplusplus
 }

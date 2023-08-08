@@ -1,0 +1,3 @@
+[submodule "src/OpenHTJ2K"]
+	path = src/OpenHTJ2K
+	url = https://github.com/osamu620/OpenHTJ2K.git
