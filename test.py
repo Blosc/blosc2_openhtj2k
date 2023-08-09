@@ -4,6 +4,7 @@ from PIL import Image
 
 import blosc2_openhtj2k
 
+
 blosc2.register_codec("openhtj2k", 244)
 
 def im2np(im):
@@ -21,10 +22,21 @@ def np2bl(array):
     print('Convert np.ndarray to blosc2:')
     blosc2_openhtj2k.set_params_defaults(transformation=1)
     nthreads = 1
-    cparams = {'codec': 244, 'nthreads': nthreads}
-    #cparams = {'codec': blosc2.Codec.ZSTD, 'nthreads': nthreads}
+    cparams = {
+        'codec': 244,
+        'nthreads': nthreads,
+        'filters': [],
+        'splitmode': blosc2.SplitMode.NEVER_SPLIT,
+    }
     dparams = {'nthreads': nthreads}
-    array = blosc2.asarray(array, chunks=array.shape, blocks=array.shape, cparams=cparams, dparams=dparams)
+    array = blosc2.asarray(
+        array,
+        chunks=array.shape,
+        blocks=array.shape,
+        cparams=cparams,
+        dparams=dparams,
+    )
+    print(f'> dtype={array.dtype}')
     print(f'> shape={array.shape}')
     print(f'> block={array.blocks}')
     print(f'> chunk={array.chunks}')
@@ -36,7 +48,6 @@ def bl2np(array):
     print('Convert blosc2 to np.ndarray:')
     print(f'< shape={array.shape} {type(array)}')
     array = array[:]
-    #array = array[:3, :381, :165]
     print(f'> shape={array.shape} {type(array)}')
     print('  OK')
     print()
@@ -53,10 +64,12 @@ def np2im(array):
 #FILENAME = 'input/officeshots.ppm'
 FILENAME = 'input/teapot.ppm'
 
-im = Image.open(FILENAME)   # load image
-array = im2np(im)           # image to numpy array
-array2 = np2bl(array)       # numpy array to blosc2 array
+im = Image.open(FILENAME)       # Load image
+array = im2np(im)               # Image to numpy array
+array = array.astype('uint32')  # The codec expects 4 bytes per color (xx 00 00 00)
+array2 = np2bl(array)           # Numpy array to blosc2 array
 print(array2.info)
-array3 = bl2np(array2)      # blosc2 array to numpy
+array3 = bl2np(array2)          # Blosc2 array to numpy
+array3 = array3.astype('uint8') # Get back 1 byte per color
 im = np2im(array3)
 im.show()
