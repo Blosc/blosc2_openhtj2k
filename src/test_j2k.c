@@ -20,15 +20,11 @@
 
 **********************************************************************/
 
-#include <inttypes.h>
 #include <math.h>
 #include <stdio.h>
 
-#include "b2nd.h"
 #include "blosc2.h"
-#include "blosc2/codecs-registry.h"
-#include "blosc2/plugins-utils.h"
-#include "blosc2_htj2k.h"
+#include "utils.h"
 
 
 static int teapot() {
@@ -38,7 +34,7 @@ static int teapot() {
 
   // Read source file(s)
   printf("Read\t");
-  if (blosc2_openhtj2k_read_image(&image, ifname)) {
+  if (blosc2_openhtj2k_read_image(&image, ifname)) { // XXX
     return -1;
   }
   printf("OK\n");
@@ -126,14 +122,14 @@ static int teapot() {
 
   // Write output file
   printf("Write\t");
-  blosc2_openhtj2k_write_ppm(buffer, (int64_t) buffer_size, &image, ofname);
+  blosc2_openhtj2k_write_ppm(buffer, (int64_t) buffer_size, &image, ofname); // XXX
   printf("OK\n");
 
   // Free resources
   BLOSC_ERROR(b2nd_free_ctx(ctx));
   BLOSC_ERROR(b2nd_free(arr));
   free(buffer);
-  blosc2_openhtj2k_free_image(&image);
+  blosc2_openhtj2k_free_image(&image); // XXX
 
   return BLOSC2_ERROR_SUCCESS;
 }
