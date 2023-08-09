@@ -48,6 +48,10 @@ static int teapot() {
 
   blosc2_cparams cparams = BLOSC2_CPARAMS_DEFAULTS;
   cparams.compcode = BLOSC_CODEC_OPENHTJ2K;
+  //cparams.compcode = BLOSC_BLOSCLZ;
+  //cparams.compcode = BLOSC_ZSTD;
+  //cparams.clevel = 9;
+
   cparams.typesize = itemsize;
   for (int i = 0; i < BLOSC2_MAX_FILTERS; i++) {
     cparams.filters[i] = 0;
@@ -97,6 +101,7 @@ static int teapot() {
     printf("Compression error");
     return -1;
   }
+  printf("Compress ratio: %.3f x\n", (float)arr->sc->nbytes / (float)arr->sc->cbytes);
 
   uint8_t *buffer;
   uint64_t buffer_size = itemsize;
@@ -117,7 +122,8 @@ static int teapot() {
         printf("\n Decompressed data differs too much from original!\n");
         return -1;
       }
-    } else if (abs(image.buffer[i] - buffer[i]) > tolerance * fmaxf(image.buffer[i], buffer[i])) {
+    }
+    else if (abs(image.buffer[i] - buffer[i]) > tolerance * fmaxf(image.buffer[i], buffer[i])) {
       printf("i: %d, data %d, dest %d", i, image.buffer[i], buffer[i]);
       printf("\n Decompressed data differs too much from original!\n");
       return -1;
@@ -145,9 +151,8 @@ int main(void) {
   blosc2_codec codec;
   blosc2_openhtj2k_register(&codec);
 
-  int result = teapot();
-  printf("teapot: %d obtained \n \n", result);
+  int error = teapot();
 
   blosc2_destroy();
-  return result;
+  return error;
 }
