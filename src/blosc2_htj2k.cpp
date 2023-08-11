@@ -13,6 +13,32 @@
 //#define JFNAME "output/teapot.jphc"
 #define JFNAME "output/teapot.j2c"
 
+static blosc2_openhtj2k_cod_params params_cod_default = {
+  .blkwidth            = 4,
+  .blkheight           = 4,
+  .is_max_precincts    = true,      // If false then precincts size must be defined
+  .use_SOP             = false,     // Use SOP (Start Of Packet) marker
+  .use_EPH             = false,     // Use EPH (End of Packet Header) marker
+  .progression_order   = 0,         // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
+  .number_of_layers    = 1,
+  .use_color_trafo     = 1,         // Use RGB->YCbCr color space conversion (1 or 0)
+  .dwt_levels          = 5,         // Number of DWT decomposition (0-32)
+  .codeblock_style     = 0x040,
+  .transformation      = 1,         // 0:lossy 1:lossless
+};
+
+static blosc2_openhtj2k_qcd_params params_qcd_default = {
+  .number_of_guardbits = 1,         // Number of guard bits (0-8)
+  .is_derived          = false,
+  .base_step           = 0.0,       // Base step size for quantization (0.0 - 2.0)
+};
+
+static blosc2_openhtj2k_params params_default = {
+  .qfactor = NO_QFACTOR,          // Quality factor
+  .isJPH = false,
+  .color_space = 0,               // 0:RGB 1:YCC (or YCbCr)
+};
+
 int blosc2_openhtj2k_encoder(
     const uint8_t *input,
     int32_t input_len,
@@ -33,7 +59,8 @@ int blosc2_openhtj2k_encoder(
     int32_t blockshape[3];
     char *dtype;
     int8_t dtype_format;
-    error = b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape, &dtype, &dtype_format);
+    error = b2nd_deserialize_meta(content, content_len, &ndim, shape, chunkshape, blockshape,
+                                  &dtype, &dtype_format);
     free(content);
     free(dtype);
 
@@ -55,9 +82,9 @@ int blosc2_openhtj2k_encoder(
     // Input variables
     const char *ofname = JFNAME;
     int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
-    uint8_t qfactor = NO_QFACTOR; // 255
-    bool isJPH = false;
-    uint8_t color_space = 0;
+    uint8_t qfactor = params_default.qfactor;
+    bool isJPH = params_default.isJPH;
+    uint8_t color_space = params_default.color_space;
     uint32_t num_threads = 1;
 
     blosc2_openhtj2k_params* plugin_params = (blosc2_openhtj2k_params*) cparams->codec_params;
@@ -111,47 +138,33 @@ int blosc2_openhtj2k_encoder(
 
     // Parameters related to COD marker
     open_htj2k::cod_params cod;
-    if (plugin_params == NULL) {
-        uint32_t cblk_width = 4, cblk_height = 4; // Must be power of 2 and >= 4
-        cod.blkwidth                      = static_cast<uint16_t>(cblk_width);
-        cod.blkheight                     = static_cast<uint16_t>(cblk_height);
-        cod.is_max_precincts              = true;   // If false then precincts size must be defined
-        cod.use_SOP                       = false;  // Use SOP (Start Of Packet) marker
-        cod.use_EPH                       = false;  // Use EPH (End of Packet Header) marker
-        cod.progression_order             = 0;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
-        cod.number_of_layers              = 1;
-        cod.use_color_trafo               = 1;      // Use RGB->YCbCr color space conversion (1 or 0)
-        cod.dwt_levels                    = 5;      // Number of DWT decomposition (0-32)
-        cod.codeblock_style               = 0x040;
-        cod.transformation                = 1;      // 0:lossy 1:lossless
-    } else {
-        cod.blkwidth                      = plugin_params->cod->blkwidth;
-        cod.blkheight                     = plugin_params->cod->blkheight;
-        cod.is_max_precincts              = plugin_params->cod->is_max_precincts;   // If false then precincts size must be defined
-        cod.use_SOP                       = plugin_params->cod->use_SOP;  // Use SOP (Start Of Packet) marker
-        cod.use_EPH                       = plugin_params->cod->use_EPH;  // Use EPH (End of Packet Header) marker
-        cod.progression_order             = plugin_params->cod->progression_order;      // 0:LRCP 1:RLCP 2:RPCL 3:PCRL 4:CPRL
-        cod.number_of_layers              = plugin_params->cod->number_of_layers;
-        cod.use_color_trafo               = plugin_params->cod->use_color_trafo;      // Use RGB->YCbCr color space conversion (1 or 0)
-        cod.dwt_levels                    = plugin_params->cod->dwt_levels;      // Number of DWT decomposition (0-32)
-        cod.codeblock_style               = plugin_params->cod->codeblock_style;
-        cod.transformation                = plugin_params->cod->transformation;      // 0:lossy 1:lossless
-    }
-
+    blosc2_openhtj2k_cod_params *cod_params;
+    cod_params = (plugin_params == NULL) ?  &params_cod_default : plugin_params->cod;
+    cod.blkwidth                      = cod_params->blkwidth;
+    cod.blkheight                     = cod_params->blkheight;
+    cod.is_max_precincts              = cod_params->is_max_precincts;
+    cod.use_SOP                       = cod_params->use_SOP;
+    cod.use_EPH                       = cod_params->use_EPH;
+    cod.progression_order             = cod_params->progression_order;
+    cod.number_of_layers              = cod_params->number_of_layers;
+    cod.use_color_trafo               = cod_params->use_color_trafo;
+    cod.dwt_levels                    = cod_params->dwt_levels;
+    cod.codeblock_style               = cod_params->codeblock_style;
+    cod.transformation                = cod_params->transformation;
 
     // Parameters related to QCD marker
     open_htj2k::qcd_params qcd{};
     if (plugin_params == NULL) {
-        qcd.is_derived          = false;
-        qcd.number_of_guardbits = 1;        // Number of guard bits (0-8)
-        qcd.base_step           = 0.0;      // Base step size for quantization (0.0 - 2.0)
+        qcd.number_of_guardbits = params_qcd_default.number_of_guardbits;
+        qcd.is_derived          = params_qcd_default.is_derived;
+        qcd.base_step           = params_qcd_default.base_step;
         if (qcd.base_step == 0.0) {
             qcd.base_step = 1.0f / static_cast<float>(1 << image->max_bpp);
         }
     } else {
-        qcd.is_derived          =  plugin_params->qcd->is_derived;
-        qcd.number_of_guardbits = plugin_params->qcd->number_of_guardbits;        // Number of guard bits (0-8)
-        qcd.base_step           = plugin_params->qcd->base_step;      // Base step size for quantiza
+        qcd.is_derived          = plugin_params->qcd->is_derived;
+        qcd.number_of_guardbits = plugin_params->qcd->number_of_guardbits;
+        qcd.base_step           = plugin_params->qcd->base_step;
     }
 
     // Encode
@@ -268,3 +281,44 @@ codec_info info = {
     .encoder=(char *)"blosc2_openhtj2k_encoder",
     .decoder=(char *)"blosc2_openhtj2k_decoder"
 };
+
+
+int set_params_default(
+  uint8_t qfactor,
+  bool isJPH,
+  uint8_t color_space,
+  uint16_t cod_blkwidth,
+  uint16_t cod_blkheight,
+  bool cod_is_max_precincts,
+  bool cod_use_SOP,
+  bool cod_use_EPH,
+  uint8_t cod_progression_order,
+  uint16_t cod_number_of_layers,
+  uint8_t cod_use_color_trafo,
+  uint8_t cod_dwt_levels,
+  uint8_t cod_codeblock_style,
+  uint8_t cod_transformation,
+  uint8_t qcd_number_of_guardbits,
+  bool qcd_is_derived,
+  double qcd_base_step
+)
+{
+  params_default.qfactor = qfactor;
+  params_default.isJPH = isJPH;
+  params_default.color_space = color_space;
+  params_cod_default.blkwidth = cod_blkwidth;
+  params_cod_default.blkheight = cod_blkheight;
+  params_cod_default.is_max_precincts = cod_is_max_precincts;
+  params_cod_default.use_SOP = cod_use_SOP;
+  params_cod_default.use_EPH = cod_use_EPH;
+  params_cod_default.progression_order = cod_progression_order;
+  params_cod_default.number_of_layers = cod_number_of_layers;
+  params_cod_default.use_color_trafo = cod_use_color_trafo;
+  params_cod_default.dwt_levels = cod_dwt_levels;
+  params_cod_default.codeblock_style = cod_codeblock_style;
+  params_cod_default.transformation = cod_transformation;
+  params_qcd_default.number_of_guardbits = qcd_number_of_guardbits;
+  params_qcd_default.is_derived = qcd_is_derived;
+  params_qcd_default.base_step = qcd_base_step;
+  return 0;
+}

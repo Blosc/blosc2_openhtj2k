@@ -86,6 +86,27 @@ typedef struct {
   component_t components[3];
 } image_t;
 
+
+int set_params_default(
+  uint8_t qfactor,
+  bool isJPH,
+  uint8_t color_space,
+  uint16_t cod_blkwidth,
+  uint16_t cod_blkheight,
+  bool cod_is_max_precincts,
+  bool cod_use_SOP,
+  bool cod_use_EPH,
+  uint8_t cod_progression_order,
+  uint16_t cod_number_of_layers,
+  uint8_t cod_use_color_trafo,
+  uint8_t cod_dwt_levels,
+  uint8_t cod_codeblock_style,
+  uint8_t cod_transformation,
+  uint8_t qcd_number_of_guardbits,
+  bool qcd_is_derived,
+  double qcd_base_step
+);
+
 #ifdef __cplusplus
 }
 #endif

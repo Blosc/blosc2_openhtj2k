@@ -8,12 +8,13 @@
 
 VERSION = 0.1
 
+import ctypes
 import os
 import platform
 from pathlib import Path
 
 
-def print_libpath():
+def get_libpath():
     system = platform.system()
     if system in ["Linux", "Darwin"]:
         libname = "libblosc2_openhtj2k.so"
@@ -21,8 +22,46 @@ def print_libpath():
         libname = "libblosc2_openhtj2k.dll"
     else:
         raise RuntimeError("Unsupported system: ", system)
-    libpath = os.path.abspath(Path(__file__).parent / libname)
+    return os.path.abspath(Path(__file__).parent / libname)
+
+def print_libpath():
+    libpath = get_libpath()
     print(libpath, end="")
+
+
+params_default = {
+    'qfactor'               : 255,
+    'isJPH'                 : False,
+    'color_space'           : 0,
+    # COD
+    'blkwidth'              : 4,
+    'blkheight'             : 4,
+    'is_max_precincts'      : True,
+    'use_SOP'               : False,
+    'use_EPH'               : False,
+    'progression_order'     : 0,
+    'number_of_layers'      : 1,
+    'use_color_trafo'       : 1,
+    'dwt_levels'            : 5,
+    'codeblock_style'       : 0x040,
+    'transformation'        : 1,
+    # QCD
+    'number_of_guardbits'   : 1,
+    'is_derived'            : False,
+    'base_step'             : 0.0,
+}
+
+def set_params_default(**kwargs):
+    params = params_default.copy()
+    params.update(kwargs)
+    args = params.values()
+    args = list(args)
+    assert len(args) == 17
+    args[16] = ctypes.c_double(args[16])
+
+    libpath = get_libpath()
+    lib = ctypes.cdll.LoadLibrary(libpath)
+    lib.set_params_default(*args)
 
 
 if __name__ == "__main__":
