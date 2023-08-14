@@ -33,7 +33,7 @@ static blosc2_openhtj2k_qcd_params params_qcd_default = {
   .base_step           = 0.0,       // Base step size for quantization (0.0 - 2.0)
 };
 
-static blosc2_openhtj2k_params params_default = {
+static blosc2_openhtj2k_params params_defaults = {
   .qfactor = NO_QFACTOR,          // Quality factor
   .isJPH = false,
   .color_space = 0,               // 0:RGB 1:YCC (or YCbCr)
@@ -82,9 +82,9 @@ int blosc2_openhtj2k_encoder(
     // Input variables
     const char *ofname = JFNAME;
     int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
-    uint8_t qfactor = params_default.qfactor;
-    bool isJPH = params_default.isJPH;
-    uint8_t color_space = params_default.color_space;
+    uint8_t qfactor = params_defaults.qfactor;
+    bool isJPH = params_defaults.isJPH;
+    uint8_t color_space = params_defaults.color_space;
     uint32_t num_threads = 1;
 
     blosc2_openhtj2k_params* plugin_params = (blosc2_openhtj2k_params*) cparams->codec_params;
@@ -283,7 +283,7 @@ codec_info info = {
 };
 
 
-int set_params_default(
+int set_params_defaults(
   uint8_t qfactor,
   bool isJPH,
   uint8_t color_space,
@@ -303,9 +303,9 @@ int set_params_default(
   double qcd_base_step
 )
 {
-  params_default.qfactor = qfactor;
-  params_default.isJPH = isJPH;
-  params_default.color_space = color_space;
+  params_defaults.qfactor = qfactor;
+  params_defaults.isJPH = isJPH;
+  params_defaults.color_space = color_space;
   params_cod_default.blkwidth = cod_blkwidth;
   params_cod_default.blkheight = cod_blkheight;
   params_cod_default.is_max_precincts = cod_is_max_precincts;
