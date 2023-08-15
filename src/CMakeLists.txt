@@ -32,4 +32,8 @@ install(TARGETS blosc2_openhtj2k LIBRARY DESTINATION blosc2_openhtj2k)
 
 # Test program
 add_executable(test_j2k test_j2k.c utils.cpp)
-target_link_libraries(test_j2k blosc2 open_htj2k m)
+if(MSVC OR MINGW)
+    target_link_libraries(test_j2k blosc2 open_htj2k)
+else()
+    target_link_libraries(test_j2k blosc2 open_htj2k m)
+endif()
