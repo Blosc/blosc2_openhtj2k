@@ -1,5 +1,4 @@
 blosc2
 cmake
 scikit-build
-
 pillow
