@@ -10,6 +10,10 @@ cmake_minimum_required(VERSION 3.20)
 project(blosc2_openhtj2k LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+# Debug build
+set(CMAKE_C_FLAGS_DEBUG_INIT "-O0 -g")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-O0 -g")
+
 message("Building Blosc2 plugin openhtj2k...")
 
 # Find blosc2.h
