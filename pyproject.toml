@@ -7,12 +7,13 @@
 # See LICENSE.txt for details about copyright and rights to use.
 
 [build-system]
-requires = ["setuptools", "scikit-build", "cmake", "ninja", "blosc2"]
-build-backend = "setuptools.build_meta"
+requires = ["scikit-build-core", "blosc2"]
+build-backend = "scikit_build_core.build"
 
 [project]
 name = "blosc2_openhtj2k"
-dynamic = ["version", "readme"]
+version = "0.0.1"
+dynamic = ["readme"]
 authors = [
     {name = "Blosc Development Team", email = "blosc@blosc.org"},
 ]
@@ -36,12 +37,19 @@ dependencies = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "blosc2_openhtj2k.VERSION"}
 readme = {file = ["README.md"], content-type = "text/markdown"}
 
 [tool.setuptools]
 platforms = [ "any" ]
 zip-safe = false
+
+[tool.scikit-build]
+# This activates verbose builds
+cmake.verbose = true
+# This controls the CMake build type
+cmake.build-type = "Release"
+# The licence file(s) to include in the wheel metadata directory.
+wheel.license-files = ["LICEN[CS]E*", "COPYING*", "NOTICE*", "AUTHORS*"]
 
 [tool.cibuildwheel]
 skip = "cp36-* cp37-* pp37-* *-manylinux_i686 *_ppc64le *_s390x *-musllinux*"
