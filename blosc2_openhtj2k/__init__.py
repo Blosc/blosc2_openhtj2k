@@ -19,7 +19,7 @@ def get_libpath():
     if system in ["Linux", "Darwin"]:
         libname = "libblosc2_openhtj2k.so"
     elif system == "Windows":
-        libname = "libblosc2_openhtj2k.dll"
+        libname = "blosc2_openhtj2k.dll"
     else:
         raise RuntimeError("Unsupported system: ", system)
     return os.path.abspath(Path(__file__).parent / libname)

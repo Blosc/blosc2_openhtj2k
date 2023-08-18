@@ -5,7 +5,6 @@
 #include "encoder.hpp"
 
 #include "blosc2_htj2k.h"
-#include "blosc2/codecs-registry.h"
 
 
 #define NO_QFACTOR 0xFF
@@ -279,10 +278,7 @@ int blosc2_openhtj2k_decoder(
     return buffer_len;
 }
 
-codec_info info = {
-    .encoder=(char *)"blosc2_openhtj2k_encoder",
-    .decoder=(char *)"blosc2_openhtj2k_decoder"
-};
+
 
 
 int set_params_defaults(
