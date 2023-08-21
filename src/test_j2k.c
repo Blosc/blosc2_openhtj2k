@@ -111,7 +111,6 @@ static int teapot() {
   buffer = malloc(buffer_size);
 
   BLOSC_ERROR(b2nd_to_cbuffer(arr, buffer, buffer_size));
-  printf("Compress ratio: %.3f x\n", (float)arr->sc->nbytes / (float)arr->sc->cbytes);
 
   // Check that the decompressed data is ok
   double tolerance = 0.1;
