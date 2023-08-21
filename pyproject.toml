@@ -21,7 +21,6 @@ description = "My package description"
 keywords = ["plugin", "blosc2"]
 license = {text = "BSD-3-Clause"}
 classifiers = [
-    "Framework :: Django",
     "Programming Language :: Python :: 3",
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",

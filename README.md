@@ -3,7 +3,7 @@
 Build and install wheel, provided you are in a virtual environment:
 
     git submodule update --init --recursive
-    python -m pip install -r requirements.txt
+    python -m pip install -r requirements-build.txt
     python setup.py bdist_wheel
     pip install dist/blosc2_openhtj2k-*.whl
 
