@@ -27,6 +27,8 @@
 #include "utils.h"
 
 #define BLOSC_CODEC_OPENHTJ2K 244
+#define IFNAME "examples/teapot.ppm"
+#define OFNAME "examples/teapot2.ppm"
 
 /* Helper function to register the codec */
 void openhtj2k_register(blosc2_codec *codec) {
@@ -40,13 +42,11 @@ void openhtj2k_register(blosc2_codec *codec) {
 }
 
 static int teapot() {
-  const char *ifname = "teapot.ppm";
-  char *ofname = "teapot2.ppm";
   image_t image;
 
   // Read source file(s)
   printf("Read\t");
-  if (blosc2_openhtj2k_read_image(&image, ifname)) { // XXX
+  if (blosc2_openhtj2k_read_image(&image, IFNAME)) {
     return -1;
   }
   printf("OK\n");
@@ -142,7 +142,7 @@ static int teapot() {
 
   // Write output file
   printf("Write\t");
-  blosc2_openhtj2k_write_ppm(buffer, (int64_t) buffer_size, &image, ofname); // XXX
+  blosc2_openhtj2k_write_ppm(buffer, (int64_t) buffer_size, &image, OFNAME);
   printf("OK\n");
 
   // Free resources

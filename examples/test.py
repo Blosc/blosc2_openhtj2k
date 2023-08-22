@@ -1,8 +1,19 @@
-import blosc2
+from pathlib import Path
+
+# Requirements
 import numpy as np
 from PIL import Image
 
+# Blosc
+import blosc2
 import blosc2_openhtj2k
+
+
+#FILENAME = 'officeshots.ppm'
+FILENAME = 'teapot.ppm'
+
+BASEDIR = Path(__file__).parent
+print('XXX', BASEDIR)
 
 
 blosc2.register_codec("openhtj2k", 244)
@@ -61,15 +72,12 @@ def np2im(array):
     return im
 
 
-#FILENAME = '../input/officeshots.ppm'
-FILENAME = '../input/teapot.ppm'
-
-im = Image.open(FILENAME)       # Load image
-array = im2np(im)               # Image to numpy array
-array = array.astype('uint32')  # The codec expects 4 bytes per color (xx 00 00 00)
-array2 = np2bl(array)           # Numpy array to blosc2 array
+im = Image.open(BASEDIR / FILENAME) # Load image
+array = im2np(im)                   # Image to numpy array
+array = array.astype('uint32')      # The codec expects 4 bytes per color (xx 00 00 00)
+array2 = np2bl(array)               # Numpy array to blosc2 array
 print(array2.info)
-array3 = bl2np(array2)          # Blosc2 array to numpy
-array3 = array3.astype('uint8') # Get back 1 byte per color
+array3 = bl2np(array2)              # Blosc2 array to numpy
+array3 = array3.astype('uint8')     # Get back 1 byte per color
 im = np2im(array3)
 im.show()
