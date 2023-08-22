@@ -11,18 +11,6 @@ extern "C" {
 #include "b2nd.h"
 #include "blosc2/codecs-registry.h"
 
-#if defined(_MSC_VER)
-#define BLOSC2_OPENHTJ2K_EXPORT __declspec(dllexport)
-#elif (defined(__GNUC__) && __GNUC__ >= 4) || defined(__clang__)
-#if defined(_WIN32) || defined(__CYGWIN__) || defined(__MINGW32__)
-  #define BLOSC2_OPENHTJ2K_EXPORT __attribute__((dllexport))
-#else
-  #define BLOSC2_OPENHTJ2K_EXPORT __attribute__((visibility("default")))
-#endif  /* defined(_WIN32) || defined(__CYGWIN__) */
-#else
-#error Cannot determine how to define BLOSC2_OPENHTJ2K_EXPORT for this compiler.
-#endif
-
 
 typedef struct {
   uint16_t blkwidth;

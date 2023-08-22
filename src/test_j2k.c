@@ -25,8 +25,19 @@
 
 #include "blosc2.h"
 #include "utils.h"
-#include "blosc2_htj2k_public.h"
 
+#define BLOSC_CODEC_OPENHTJ2K 244
+
+/* Helper function to register the codec */
+void openhtj2k_register(blosc2_codec *codec) {
+  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
+  codec->version = 1;
+  codec->complib = 1;
+  codec->compname = (char*)"openhtj2k";
+  codec->encoder = NULL;
+  codec->decoder = NULL;
+  blosc2_register_codec(codec);
+}
 
 static int teapot() {
   const char *ifname = "teapot.ppm";
@@ -143,12 +154,11 @@ static int teapot() {
   return BLOSC2_ERROR_SUCCESS;
 }
 
-
 int main(void) {
   // Initialization
   blosc2_init();
   blosc2_codec codec;
-  blosc2_openhtj2k_register(&codec);
+  openhtj2k_register(&codec);
 
   int error = teapot();
 

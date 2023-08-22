@@ -5,6 +5,7 @@
 #include "encoder.hpp"
 
 #include "blosc2_htj2k.h"
+#include "blosc2_htj2k_public.h"
 
 
 #define NO_QFACTOR 0xFF

@@ -24,7 +24,7 @@ include_directories(
     OpenHTJ2K/source/core/interface
 )
 
-link_directories(${Python_LIB})
+link_directories(${Python_LIB} ${Python_LIB64})
 target_link_libraries(blosc2_openhtj2k open_htj2k)
 
 # Install
