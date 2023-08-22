@@ -1,3 +1,4 @@
+import argparse
 from pathlib import Path
 
 # Requirements
@@ -72,12 +73,19 @@ def np2im(array):
     return im
 
 
-im = Image.open(BASEDIR / FILENAME) # Load image
-array = im2np(im)                   # Image to numpy array
-array = array.astype('uint32')      # The codec expects 4 bytes per color (xx 00 00 00)
-array2 = np2bl(array)               # Numpy array to blosc2 array
-print(array2.info)
-array3 = bl2np(array2)              # Blosc2 array to numpy
-array3 = array3.astype('uint8')     # Get back 1 byte per color
-im = np2im(array3)
-im.show()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--show', action='store_true')
+    args = parser.parse_args()
+
+    im = Image.open(BASEDIR / FILENAME) # Load image
+    array = im2np(im)                   # Image to numpy array
+    array = array.astype('uint32')      # The codec expects 4 bytes per color (xx 00 00 00)
+    array2 = np2bl(array)               # Numpy array to blosc2 array
+    print(array2.info)
+    array3 = bl2np(array2)              # Blosc2 array to numpy
+    array3 = array3.astype('uint8')     # Get back 1 byte per color
+    im = np2im(array3)
+
+    if args.show:
+        im.show()

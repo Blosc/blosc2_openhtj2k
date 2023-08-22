@@ -21,16 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        arch: [x86_64, aarch64, arm64]
-        exclude:
-          - os: windows-latest
-            arch: aarch64
-          - os: macos-latest
-            arch: aarch64
-          - os: windows-latest
-            arch: arm64
-          - os: ubuntu-latest
-            arch: arm64
+        arch: [x86_64]
 
     steps:
       - name: Checkout repo
@@ -48,19 +39,26 @@ jobs:
         uses: docker/setup-qemu-action@v2
 
       - name: Install Ninja
-        uses: seanmiddleditch/gha-setup-ninja@master
+        id: ninja
+        uses: turtlesec-no/get-ninja@main
 
       - name: Install MSVC amd64
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
 
+      - name: Update Clang
+        if: ${{ matrix.os == 'macos-latest' && matrix.arch == 'arm64' }}
+        run: |
+          sudo xcode-select -s /Applications/Xcode_15.0.app/Contents/Developer
+          clang -v
+
       - name: Build wheels (Windows)
         if: runner.os == 'Windows'
         uses: pypa/cibuildwheel@v2.14.1
         env:
-          CIBW_BUILD: 'cp38-win_amd64 cp39-win_amd64 cp310-win_amd64 cp311-win_amd64'
-          CIBW_BEFORE_TEST: pip install blosc2
+          CIBW_BUILD: 'cp38-win_amd64'
+          CIBW_BEFORE_TEST: python -m pip install --upgrade pip && python -m pip install -r requirements-test.txt
           CIBW_TEST_COMMAND: cmd /V /C "set "BLOSC_TRACE=1" && python {project}/examples/test.py"
           CIBW_BUILD_VERBOSITY: 1
 
@@ -69,7 +67,7 @@ jobs:
         uses: pypa/cibuildwheel@v2.14.1
         env:
           CIBW_BUILD: 'cp38-* cp39-* cp310-* cp311-*'
-          CIBW_BEFORE_TEST: pip install blosc2
+          CIBW_BEFORE_TEST: python -m pip install --upgrade pip && python -m pip install -r requirements-test.txt
           CIBW_TEST_COMMAND: BLOSC_TRACE=1 python {project}/examples/test.py
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ARCHS_MACOS: "arm64"
@@ -82,7 +80,7 @@ jobs:
           CIBW_BUILD: 'cp38-* cp39-* cp310-* cp311-*'
           CIBW_SKIP: '*-manylinux*_i686 *-musllinux_* ${{ env.CIBW_SKIP}}'
           CIBW_ARCHS_LINUX: ${{ matrix.arch }}
-          CIBW_BEFORE_TEST: pip install blosc2
+          CIBW_BEFORE_TEST: python -m pip install --upgrade pip && python -m pip install -r requirements-test.txt
           CIBW_TEST_COMMAND: BLOSC_TRACE=1 python {project}/examples/test.py
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ARCHS_MACOS: "x86_64"

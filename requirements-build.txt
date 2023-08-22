@@ -1,3 +1,2 @@
 scikit-build-core
 blosc2
-pillow
