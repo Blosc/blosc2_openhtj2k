@@ -171,15 +171,15 @@ int blosc2_openhtj2k_encoder(
     std::vector<uint8_t> outbuf;
     for (int i = 0; i < num_iterations; ++i) {
         open_htj2k::openhtj2k_encoder encoder(
-            "",                     // output filename, not used because below we call set_output_buffer
+            "",             // output filename, unused because we call set_output_buffer
             input_buf,
-            siz,                    // information of input image
-            cod,                    // parameters related to COD marker
-            qcd,                    // parameters related to QCD marker
-            qfactor,                // quality factor (0-100 or 255)
+            siz,            // information of input image
+            cod,            // parameters related to COD marker
+            qcd,            // parameters related to QCD marker
+            qfactor,        // quality factor (0-100 or 255)
             isJPH,
-            color_space,            // 0: RGB or 1: YCC
-            num_threads             // num_threads
+            color_space,    // 0: RGB or 1: YCC
+            num_threads     // num_threads
         );
 
         encoder.set_output_buffer(outbuf);
@@ -276,8 +276,6 @@ int blosc2_openhtj2k_decoder(
 
     return buffer_len;
 }
-
-
 
 
 int set_params_defaults(

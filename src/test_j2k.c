@@ -27,8 +27,8 @@
 #include "utils.h"
 
 #define BLOSC_CODEC_OPENHTJ2K 244
-#define IFNAME "examples/teapot.ppm"
-#define OFNAME "examples/teapot2.ppm"
+#define IFNAME "teapot.ppm"
+#define OFNAME "/tmp/teapot2.ppm"
 
 /* Helper function to register the codec */
 void openhtj2k_register(blosc2_codec *codec) {

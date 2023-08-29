@@ -60,7 +60,7 @@ jobs:
           CIBW_BUILD: 'cp38-win_amd64 cp39-win_amd64 cp310-win_amd64 cp311-win_amd64'
           CIBW_BEFORE_TEST: python -m pip install --upgrade pip && python -m pip install -r requirements-test.txt
           CIBW_TEST_COMMAND: >
-            cmd /V /C "python {project}/examples/compress.py {project}/examples/teapot.ppm examples/teapot.b2nd"
+            cmd /V /C "python {project}/examples/compress.py {project}/examples/teapot.ppm {project}/examples/teapot.b2nd"
 
       - name: Build wheels (Linux / Mac OSX)
         if: ${{ matrix.os != 'windows-latest' && (matrix.arch == 'x86_64' || matrix.arch == 'aarch64') }}

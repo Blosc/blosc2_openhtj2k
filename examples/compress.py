@@ -11,8 +11,14 @@ from PIL import Image
 # This is done once.
 blosc2.register_codec("openhtj2k", 244)
 
-def compress(im, urlpath=None):
-    """This function gets a PIL image and returns a blosc2 array.
+def compress(im, urlpath=None, **kwargs):
+    """
+    This function gets a PIL image and returns a Blosc2 array.
+
+    If the optional argument urlpath is given, the Blosc2 array will be saved to that
+    location.
+
+    Other keyword arguments are passed to blosc2_openhtj2k.set_params_defaults(...)
     """
     # Convert the image to a numpy array
     np_array = np.asarray(im)
@@ -28,9 +34,7 @@ def compress(im, urlpath=None):
     np_array = np_array.astype('uint32')
 
     # Set the parameters that will be used by the codec
-    blosc2_openhtj2k.set_params_defaults(
-        transformation=0,   # 0:lossy 1:lossless (default is 1)
-    )
+    blosc2_openhtj2k.set_params_defaults(**kwargs)
 
     # Multithreading is not supported, so we must set the number of threads to 1
     nthreads = 1
@@ -47,7 +51,6 @@ def compress(im, urlpath=None):
 
     # Transform the numpy array to a blosc2 array. This is where compression happens, and
     # the HTJ2K codec is called.
-    print('XXX', np_array.shape) # 3, 256, 256
     bl_array = blosc2.asarray(
         np_array,
         chunks=np_array.shape,
@@ -67,10 +70,22 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Compress the given input image using Blosc2 and OpenHTJ2K',
     )
-    parser.add_argument('inputfile')
-    parser.add_argument('outputfile')
+    add_argument = parser.add_argument
+    add_argument('inputfile')
+    add_argument('outputfile')
+    add_argument('--transformation', type=int, help='0:lossy 1:lossless (default is 1)')
+    add_argument('--qfactor', type=int, help='Quality factor: 0-100')
+    #add_argument('--isJPH', action='store_true', help='')
+    add_argument('--color-space', type=int, help='0:RGB 1:YCC')
+    add_argument('--blkwidth', type=int, help='Precinct width (default: 4)')
+    add_argument('--blkheight', type=int, help='Precinct height (default: 4)')
     args = parser.parse_args()
+
+    kwargs = {
+        k: v for k, v in args._get_kwargs()
+        if k in blosc2_openhtj2k.params_defaults and v is not None
+    }
 
     im = Image.open(args.inputfile)
     Path(args.outputfile).unlink(missing_ok=True)
-    compress(im, args.outputfile)
+    compress(im, args.outputfile, **kwargs)
