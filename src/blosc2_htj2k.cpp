@@ -31,9 +31,10 @@ static blosc2_openhtj2k_qcd_params params_qcd_default = {
 };
 
 static blosc2_openhtj2k_params params_defaults = {
-  .qfactor = NO_QFACTOR,          // Quality factor
+  .qfactor = NO_QFACTOR,            // Quality factor
   .isJPH = false,
-  .color_space = 0,               // 0:RGB 1:YCC (or YCbCr)
+  .color_space = 0,                 // 0:RGB 1:YCC (or YCbCr)
+  .nthreads = 1,                    // Number of threads
 };
 
 int blosc2_openhtj2k_encoder(
@@ -82,13 +83,14 @@ int blosc2_openhtj2k_encoder(
     uint8_t qfactor = params_defaults.qfactor;
     bool isJPH = params_defaults.isJPH;
     uint8_t color_space = params_defaults.color_space;
-    uint32_t num_threads = 1;
+    uint32_t nthreads = params_defaults.nthreads;
 
     blosc2_openhtj2k_params* plugin_params = (blosc2_openhtj2k_params*) cparams->codec_params;
     if (plugin_params != NULL) {
         qfactor = plugin_params->qfactor;
         isJPH = plugin_params->isJPH;
         color_space = plugin_params->color_space;
+        nthreads = plugin_params->nthreads;
     }
 
     // Input buffer
@@ -179,7 +181,7 @@ int blosc2_openhtj2k_encoder(
             qfactor,        // quality factor (0-100 or 255)
             isJPH,
             color_space,    // 0: RGB or 1: YCC
-            num_threads     // num_threads
+            nthreads        // Number of threads (default: 1)
         );
 
         encoder.set_output_buffer(outbuf);
@@ -212,8 +214,9 @@ int blosc2_openhtj2k_decoder(
 {
     // Input variables
     uint8_t reduce_NL = 0;          // Number of DWT resolution reduction (0-32)
-    uint32_t num_threads = 1;
     int32_t num_iterations = 1;     // Number of iterations (1-INT32_MAX)
+
+    uint32_t nthreads = params_defaults.nthreads;
 
     // Decode
     std::vector<int32_t *> buf;
@@ -223,7 +226,7 @@ int blosc2_openhtj2k_decoder(
     std::vector<bool> img_signed;
     for (int i = 0; i < num_iterations; ++i) {
         // Create decoder
-        open_htj2k::openhtj2k_decoder decoder(input, input_len, reduce_NL, num_threads);
+        open_htj2k::openhtj2k_decoder decoder(input, input_len, reduce_NL, nthreads);
 
         // Clear vectors
         for (auto &j : buf) {
@@ -282,6 +285,7 @@ int set_params_defaults(
   uint8_t qfactor,
   bool isJPH,
   uint8_t color_space,
+  uint32_t nthreads,
   uint16_t cod_blkwidth,
   uint16_t cod_blkheight,
   bool cod_is_max_precincts,
@@ -301,6 +305,7 @@ int set_params_defaults(
   params_defaults.qfactor = qfactor;
   params_defaults.isJPH = isJPH;
   params_defaults.color_space = color_space;
+  params_defaults.nthreads = nthreads;
   params_cod_default.blkwidth = cod_blkwidth;
   params_cod_default.blkheight = cod_blkheight;
   params_cod_default.is_max_precincts = cod_is_max_precincts;

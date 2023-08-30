@@ -44,6 +44,7 @@ typedef struct {
   uint32_t YTOsiz;
   blosc2_openhtj2k_cod_params *cod;
   blosc2_openhtj2k_qcd_params *qcd;
+  uint32_t nthreads;
 } blosc2_openhtj2k_params;
 
 /* Extra functions */
@@ -70,6 +71,7 @@ int set_params_defaults(
   uint8_t qfactor,
   bool isJPH,
   uint8_t color_space,
+  uint32_t nthreads,
   uint16_t cod_blkwidth,
   uint16_t cod_blkheight,
   bool cod_is_max_precincts,

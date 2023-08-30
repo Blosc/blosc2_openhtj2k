@@ -31,6 +31,7 @@ params_defaults = {
     'qfactor'               : 255,
     'isJPH'                 : False,
     'color_space'           : 0,
+    'nthreads'              : 1,
     # COD
     'blkwidth'              : 4,
     'blkheight'             : 4,
@@ -60,7 +61,7 @@ def set_params_defaults(**kwargs):
     params.update(kwargs)
     args = params.values()
     args = list(args)
-    args[16] = ctypes.c_double(args[16])
+    args[17] = ctypes.c_double(args[17])
 
     libpath = get_libpath()
     lib = ctypes.cdll.LoadLibrary(libpath)

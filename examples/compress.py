@@ -77,6 +77,7 @@ if __name__ == '__main__':
     add_argument('--qfactor', type=int, help='Quality factor: 0-100')
     #add_argument('--isJPH', action='store_true', help='')
     add_argument('--color-space', type=int, help='0:RGB 1:YCC')
+    add_argument('--nthreads', type=int, help='Number of threads')
     add_argument('--blkwidth', type=int, help='Precinct width (default: 4)')
     add_argument('--blkheight', type=int, help='Precinct height (default: 4)')
     args = parser.parse_args()

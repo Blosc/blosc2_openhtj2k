@@ -19,6 +19,11 @@ supported.
 
 # Usage from Python
 
+The examples are not distributed with the wheel, but you can just clone the project:
+
+    git clone https://github.com/Blosc/blosc2_openhtj2k.git
+    cd blosc2_openhtj2k
+
 In the examples folder there are the compress and decompress scripts, both take two
 required arguments, for the input and output file:
 
@@ -33,10 +38,14 @@ To try out these scripts first install the required software:
     pip install blosc2-openhtj2k
     pip install Pillow
 
-Then you can run the scripts, for example:
+Then you can run the scripts, from the examples folder, for example:
 
-    python examples/compress.py examples/teapot.ppm /tmp/teapot.b2nd
-    python examples/decompress.py /tmp/teapot.b2nd /tmp/teapot.png
+    cd examples
+    python compress.py kodim23.png /tmp/kodim23.b2nd
+    python decompress.py /tmp/kodim23.b2nd /tmp/kodim23.png
+
+Note that the examples cannot be run from the project's root, because it will fail to
+import `blosc2_openhtj2k`, since there's a directory with that name.
 
 For details on the arguments these commands accept call them with the `--help` option.
 
