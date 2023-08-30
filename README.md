@@ -8,16 +8,14 @@ when compared to the traditional JPEG 2000, for details check the
 To provide this feature this plugin uses the
 [OpenHTJ2K](https://github.com/osamu620/OpenHTJ2K) library.
 
-
 # Install
 
 The Blosc2 OpenHTJ2K plugin is distributed as a Python wheel:
 
     pip install blosc2-openhtj2k
 
-There are wheels for Linux, macOS and Windows. For now only the x86-64 architecture is
+There are wheels for Linux, macOS and Windows. As of now only the x86-64 architecture is
 supported.
-
 
 # Usage from Python
 
@@ -42,7 +40,9 @@ Then you can run the scripts, for example:
 
 For details on the arguments these commands accept call them with the `--help` option.
 
-## Compress
+Below follows more detailed docs on how to accomplish the compression and decompression.
+
+## Compression
 
 ### Register the plugin
 
@@ -64,8 +64,8 @@ library:
 
 ### Transform the Numpy array
 
-Before feeding this array to Blosc2, we need to transform it, because its structutre is
-different from what is expected by the OpenHTJ2K plugin. As can be read in the
+Before feeding this array to Blosc2, we need to massage it a bit, because its structure
+is different from what is expected by the OpenHTJ2K plugin. As can be seen in the
 `compress.py` script, these are the transformations required, with comments:
 
     # Transpose the array so the channel (color) comes first
@@ -88,21 +88,24 @@ optional. For example:
         transformation=0,   # 0:lossy 1:lossless (default is 1)
     )
 
-Once the options set, these remain for all future calls, until they are changed again.
+Once the options above are set, these remain for all future calls, until they are changed
+again.
 
 ### Blosc2 parameters
 
 Note that:
 
-- We must tell Blosc2 to use the OpenHTJ2K codec, passing the number we used when
-  registering it.
+- We must tell Blosc2 to use the OpenHTJ2K codec, passing the same number ID than we used
+  when registering it.
 
 - At this time the plugin does not support multithreading, so the number of threads must
-  be explicitely defined to 1.
+  be explicitly defined to 1.
 
-- The plugin does not work with filters, nor with split mode, so these must be reset.
+- OpenHTJ2K expects to work with images, so this plugin won't work well when combined
+  with regular Blosc2 filters (`SHUFFLE`, `BITSHUFFLE`, `BYTEDELTA`...), nor with split mode,
+  because they change the image completely; so these must be reset.
 
-So we define the compression and decompression parameters like this:
+With that, we typically define the compression and decompression parameters like this:
 
     nthreads = 1
     cparams = {
@@ -113,7 +116,7 @@ So we define the compression and decompression parameters like this:
     }
     dparams = {'nthreads': nthreads}
 
-### Compression
+### Actual OpenHTJ2K compression
 
 Now we can call the command that will compress the image using Blosc2 and the OpenHTJ2K
 plugin:
@@ -134,10 +137,10 @@ Note that:
   example `urlpath=/tmp/image.b2nd'.
 
 
-## Decompress
+## Decompression
 
-Just like compress, the plugin must be registered (if it's not already). Note that the
-number must match the one used when the image was compressed:
+Just like in compression, the plugin must be registered (if it's not already) first.
+Note that the number ID must match the one used when the image was compressed:
 
     blosc2.register_codec("openhtj2k", 244)
 
@@ -150,7 +153,7 @@ Now decompressing it is easy, we will get a Numpy array:
 
     np_array = array[:]
 
-But to obtain the image first we must undo the transformations done when compressing:
+But prior to obtain the image, we must undo the transformations done when compressing:
 
     # Get back 1 byte per color, change dtype from uint32 to uint8
     np_array = np_array.astype('uint8')
