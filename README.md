@@ -53,12 +53,6 @@ Below follows more detailed docs on how to accomplish the compression and decomp
 
 ## Compression
 
-### Register the plugin
-
-Before using this plugin we need to register it:
-
-    blosc2.register_codec("openhtj2k", 244)
-
 ### Load the image
 
 To compress an image first we need to load it, and to transform it to a Numpy array, then
@@ -104,8 +98,7 @@ again.
 
 Note that:
 
-- We must tell Blosc2 to use the OpenHTJ2K codec, passing the same number ID than we used
-  when registering it.
+- We must tell Blosc2 to use the OpenHTJ2K codec, passing its corresponding id `BLOSC_CODEC_OPENHTJ2K`.
 
 - At this time the plugin does not support multithreading, so the number of threads must
   be explicitly defined to 1.
@@ -118,7 +111,7 @@ With that, we typically define the compression and decompression parameters like
 
     nthreads = 1
     cparams = {
-        'codec': 244,
+        'codec': blosc2.Codec.OPENHTJ2K,
         'nthreads': nthreads,
         'filters': [],
         'splitmode': blosc2.SplitMode.NEVER_SPLIT,
@@ -147,11 +140,6 @@ Note that:
 
 
 ## Decompression
-
-Just like in compression, the plugin must be registered (if it's not already) first.
-Note that the number ID must match the one used when the image was compressed:
-
-    blosc2.register_codec("openhtj2k", 244)
 
 If the Blosc2 array was saved to a file with a different program, we will need to read it
 first:

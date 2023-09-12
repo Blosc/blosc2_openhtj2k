@@ -24,22 +24,12 @@
 #include <stdio.h>
 
 #include "blosc2.h"
+#include "blosc2/codecs-registry.h"
 #include "utils.h"
 
-#define BLOSC_CODEC_OPENHTJ2K 244
 #define IFNAME "teapot.ppm"
 #define OFNAME "/tmp/teapot2.ppm"
 
-/* Helper function to register the codec */
-void openhtj2k_register(blosc2_codec *codec) {
-  codec->compcode = BLOSC_CODEC_OPENHTJ2K;
-  codec->version = 1;
-  codec->complib = 1;
-  codec->compname = (char*)"openhtj2k";
-  codec->encoder = NULL;
-  codec->decoder = NULL;
-  blosc2_register_codec(codec);
-}
 
 static int teapot() {
   image_t image;
@@ -157,8 +147,6 @@ static int teapot() {
 int main(void) {
   // Initialization
   blosc2_init();
-  blosc2_codec codec;
-  openhtj2k_register(&codec);
 
   int error = teapot();
 

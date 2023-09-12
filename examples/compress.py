@@ -7,10 +7,6 @@ import numpy as np
 from PIL import Image
 
 
-# Register the codec, with this number we will tell blosc2 to use the openhj2k codec.
-# This is done once.
-blosc2.register_codec("openhtj2k", 244)
-
 def compress(im, urlpath=None, **kwargs):
     """
     This function gets a PIL image and returns a Blosc2 array.
@@ -42,7 +38,7 @@ def compress(im, urlpath=None, **kwargs):
     # Define the compression and decompression paramaters. Disable the filters and the
     # splitmode, because these don't work with the codec.
     cparams = {
-        'codec': 244,
+        'codec': blosc2.Codec.OPENHTJ2K,
         'nthreads': nthreads,
         'filters': [],
         'splitmode': blosc2.SplitMode.NEVER_SPLIT,
