@@ -2,7 +2,7 @@
 
 This is a dynamic codec plugin for Blosc2 that allows to compress and decompress images
 using the High Throughput JPEG 2000 standard. The HT version brings increased performance
-when compared to the traditional JPEG 2000, for details check the
+when compared to the traditional JPEG 2000.  For details, check the
 [HTJ2K whitepaper](https://ds.jpeg.org/whitepapers/jpeg-htj2k-whitepaper.pdf).
 
 To provide this feature this plugin uses the
@@ -14,7 +14,7 @@ The Blosc2 OpenHTJ2K plugin is distributed as a Python wheel:
 
     pip install blosc2-openhtj2k
 
-There are wheels for Linux, macOS and Windows. As of now only the x86-64 architecture is
+There are wheels for Linux, macOS and Windows. As of now, only the x86-64 architecture is
 supported.
 
 # Usage from Python

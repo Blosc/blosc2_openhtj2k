@@ -8,6 +8,7 @@
 
 from skbuild import setup
 
+
 setup(
     name="blosc2_openhtj2k",
     packages=["blosc2_openhtj2k"],

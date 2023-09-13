@@ -12,14 +12,13 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "blosc2_openhtj2k"
-version = "0.0.1"
-dynamic = ["readme"]
-authors = [
-    {name = "Blosc Development Team", email = "blosc@blosc.org"},
-]
-description = "My package description"
-keywords = ["plugin", "blosc2"]
+version = "0.1.0"
+description = "Plugin of the OpenHTJ2K codec for the C-Blosc2 library"
+authors = [{name = "Blosc Development Team", email = "blosc@blosc.org"}]
+maintainers = [{ name = "Blosc Development Team", email = "blosc@blosc.org"}]
 license = {text = "BSD-3-Clause"}
+readme = "README.md"
+keywords = ["plugin", "blosc2"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Development Status :: 3 - Alpha",
@@ -34,9 +33,6 @@ classifiers = [
 dependencies = [
     "blosc2"
 ]
-
-[tool.setuptools.dynamic]
-readme = {file = ["README.md"], content-type = "text/markdown"}
 
 [tool.setuptools]
 platforms = [ "any" ]
