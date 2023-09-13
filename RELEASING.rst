@@ -19,7 +19,8 @@ Preliminaries
 
 * Check that the current main branch is passing the tests in continuous integration.
 
-* Build the package and make sure that examples work correctly::
+* Build the package and make sure that examples work correctly (remember that this
+  package only works on x86-64 platforms for now)::
 
     cd examples
     python compress.py kodim23.png /tmp/kodim23.b2nd
