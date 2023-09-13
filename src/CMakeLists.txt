@@ -9,6 +9,7 @@
 # Build OpenHTJ2K statically
 set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(ENABLE_AVX2 OFF)
 add_subdirectory(OpenHTJ2K)
 
 # Build libblosc2_openhtj2k.so

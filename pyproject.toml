@@ -12,7 +12,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "blosc2_openhtj2k"
-version = "0.1.0"
+version = "0.1.1"
 description = "Plugin of the OpenHTJ2K codec for the C-Blosc2 library"
 authors = [{name = "Blosc Development Team", email = "blosc@blosc.org"}]
 maintainers = [{ name = "Blosc Development Team", email = "blosc@blosc.org"}]
