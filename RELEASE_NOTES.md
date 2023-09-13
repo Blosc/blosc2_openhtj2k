@@ -1,5 +1,9 @@
 # Release notes
 
+## Changes from 0.1.1 to 0.1.2
+
+* Only remove AVX2 flag for Apple.
+
 ## Changes from 0.1.0 to 0.1.1
 
 * Removed the AVX2 flag by default (Apple Rosetta cannot emulate AVX due to

@@ -1,4 +1,4 @@
-Announcing Blosc2-OpenHTJ2K 0.1.1
+Announcing Blosc2-OpenHTJ2K 0.1.2
 =================================
 
 This is the first public release.  This provides the ability to use the

@@ -9,7 +9,10 @@
 # Build OpenHTJ2K statically
 set(BUILD_SHARED_LIBS OFF)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-set(ENABLE_AVX2 OFF)
+if(APPLE)
+    # Apple Rosetta cannot emulate AVX due to Intel patents
+    set(ENABLE_AVX2 OFF)
+endif()
 add_subdirectory(OpenHTJ2K)
 
 # Build libblosc2_openhtj2k.so
