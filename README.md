@@ -166,3 +166,8 @@ Which can be saved or displayed:
 
     im.save(...)
     im.show()
+
+# Usage from C
+
+This plugin can also be called from a regular C program.  For an example, look at:
+[src/test_j2k.c](https://github.com/Blosc/blosc2_openhtj2k/blob/main/src/test_j2k.c)

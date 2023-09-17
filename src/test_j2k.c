@@ -8,11 +8,7 @@
     See LICENSE.txt for details about copyright and rights to use.
 
     Test program demonstrating use of the Blosc filter from C code.
-    To compile this program:
-
-    $ gcc -O test_j2k.c -o test_j2k -lblosc2
-
-    To run:
+    Compile this program with cmake and run:
 
     $ ./test_j2k
     Read    OK
