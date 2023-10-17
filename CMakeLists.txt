@@ -20,20 +20,24 @@ set(CMAKE_CXX_FLAGS_DEBUG_INIT "-O0 -g")
 message("Building Blosc2 plugin openhtj2k...")
 
 # Find blosc2.h
-find_package(Python COMPONENTS Interpreter NumPy Development.Module REQUIRED)
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 message(STATUS "Executable: ${Python_EXECUTABLE}")
-message(STATUS "NumPy found: ${Python_NumPy_FOUND}")
-message(STATUS "NumPy version: ${Python_NumPy_VERSION}")
-message(STATUS "Python_NumPy_INCLUDE_DIRS: ${Python_NumPy_INCLUDE_DIRS}")
+
 if (UNIX)
-    cmake_path(SET Python_ROOT NORMALIZE "${Python_NumPy_INCLUDE_DIRS}/../../../../../..")
+    cmake_path(SET Python_LIB NORMALIZE "${Python_STDLIB}/..")
 else()
-    cmake_path(SET Python_ROOT NORMALIZE "${Python_NumPy_INCLUDE_DIRS}/../../../../..")
+    cmake_path(SET Python_LIB NORMALIZE "${Python_STDLIB}")
 endif()
+
+cmake_path(SET Python_ROOT NORMALIZE "${Python_LIB}/..")
+message(STATUS "Inferred Python root: ${Python_ROOT}")
+cmake_path(SET Python_LIB64 NORMALIZE "${Python_ROOT}/lib64")
+
 cmake_path(SET Python_INCLUDE NORMALIZE "${Python_ROOT}/include")
 message(STATUS "Found Python include: ${Python_INCLUDE}")
-cmake_path(SET Python_LIB NORMALIZE "${Python_ROOT}/lib")
-cmake_path(SET Python_LIB64 NORMALIZE "${Python_ROOT}/lib64")
+message(STATUS "Inferred Python lib: ${Python_LIB}")
+message(STATUS "Inferred Python lib64: ${Python_LIB64}")
+
 cmake_path(SET Python_Blosc2_INCLUDE NORMALIZE "${Python_ROOT}/include/blosc2.h")
 cmake_path(HAS_FILENAME Python_Blosc2_INCLUDE HAS_BLOSC2)
 if(HAS_BLOSC2)
